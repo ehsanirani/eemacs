@@ -1,0 +1,37 @@
+# Compiled files
+*.elc
+eln-cache/
+
+# Package manager directories
+straight/
+elpa/
+
+# Auto-generated files
+auto-save-list/
+places.eld
+recentf.eld
+history
+transient/
+
+# Local cache and temporary files
+*.tmp
+*~
+\#*\#
+.#*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Session files
+session.el
+
+# Custom config (user-specific)
+config.el
+
+# Org-roam database
+org-roam.db

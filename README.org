@@ -1,0 +1,18 @@
+#+TITLE: eemacs - Ehsan's Minimal Emacs Configuration
+#+AUTHOR: Ehsan
+#+OPTIONS: toc:nil
+
+Minimal personal Emacs config - produced by lots of vibe coding.
+
+* Inspiration
+- [[https://github.com/abougouffa/minemacs][minemacs]] :: A modern, minimal Emacs configuration
+- [[https://github.com/seagle0128/.emacs.d][centaur-emacs]] :: A fancy and fast Emacs configuration
+- [[https://github.com/LionyxML/emacs-kick][emacs-kick]] :: A kickstart for your Emacs configuration
+
+* Features
+- Toggle Vim/Emacs editing :: ~C-c T~
+- Code highlighting (in progress) :: ~M-x ee-highlight-code-content-only~
+- Uses straight.el for packages
+
+* Quick Start
+Clone to =~/.emacs.d/~, copy =config-sample.el= to =config.el=, and start Emacs.
