@@ -39,6 +39,9 @@
 ;; Terminals
 (require 'ee-terminals)
 
+;; RTL languages
+(require 'ee-rtl)
+
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
 
