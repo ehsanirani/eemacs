@@ -11,7 +11,11 @@
   :straight t
   :interpreter "julia"
   :config
-  (add-hook 'julia-mode-hook 'eglot-jl-init)
+  (defun my-julia-eglot-setup ()
+    "Set longer timeout for Julia LSP."
+    (setq-local eglot-connect-timeout 1000)
+    (eglot-jl-init))
+  (add-hook 'julia-mode-hook 'my-julia-eglot-setup)
   (add-hook 'julia-mode-hook 'eglot-ensure))
 
 ;; Julia REPL integration
