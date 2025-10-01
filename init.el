@@ -42,6 +42,9 @@
 ;; RTL languages
 (require 'ee-rtl)
 
+;; AI integration
+(require 'ee-ai)
+
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
 
