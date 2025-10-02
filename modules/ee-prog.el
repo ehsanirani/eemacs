@@ -121,10 +121,7 @@
           (go-mode "{" "}" "/[*/]" nil nil))))
 
 ;; Prettify Symbols (Centaur-style) - display lambda as λ, etc.
-(use-package prog-mode
-  :ensure nil
-  :hook (prog-mode . prettify-symbols-mode)
-  :init
-  (setq prettify-symbols-unprettify-at-point 'right-edge))
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+(setq prettify-symbols-unprettify-at-point 'right-edge)
 
 (provide 'ee-prog)
