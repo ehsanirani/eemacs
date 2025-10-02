@@ -35,3 +35,12 @@ config.el
 
 # Org-roam database
 org-roam.db
+
+# Ignore all files in root except allowed ones
+/*
+!.gitignore
+!README.org
+!config-sample.el
+!early-init.el
+!init.el
+!modules/
