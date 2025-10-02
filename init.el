@@ -26,6 +26,8 @@
 (require 'ee-eglot)
 (require 'ee-python)
 (require 'ee-julia)
+(require 'ee-rust)
+(require 'ee-nix)
 
 ;; Org mode
 (require 'ee-org)
