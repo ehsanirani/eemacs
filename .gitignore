@@ -30,9 +30,6 @@ Thumbs.db
 # Session files
 session.el
 
-# Custom config (user-specific)
-config.el
-
 # Org-roam database
 org-roam.db
 
@@ -41,6 +38,7 @@ org-roam.db
 !.gitignore
 !README.org
 !config-sample.el
+!config.el
 !early-init.el
 !init.el
 !modules/
