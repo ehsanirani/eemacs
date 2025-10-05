@@ -1,5 +1,17 @@
 ;;; ee-editor.el --- Editor enhancements for eemacs -*- lexical-binding: t; -*-
 
+;; Line wrapping - wrap lines at window edge
+(use-package emacs
+  :config
+  ;; Enable visual line mode globally for better line wrapping
+  (global-visual-line-mode 1))
+
+;; Window navigation with Shift + arrow keys
+(use-package windmove
+  :straight (:type built-in)
+  :config
+  (windmove-default-keybindings))
+
 ;; Vundo - Visual undo trajectory
 (use-package vundo
   :straight t
