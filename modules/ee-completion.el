@@ -141,7 +141,10 @@
          ("M-s d" . consult-find)
          ("M-s g" . consult-grep))
   :init
-  (setq xref-show-definitions-function #'consult-xref))
+  (setq xref-show-definitions-function #'consult-xref)
+  :config
+  ;; Add preview delay for theme switching to avoid errors
+  (consult-customize consult-theme :preview-key '(:debounce 0.2 any)))
 
 ;; Actions
 (use-package embark

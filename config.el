@@ -31,8 +31,12 @@
 ;; Ensure font is applied after theme loads (fixes font size issue)
 (defun ehsan/apply-font-after-theme ()
   "Apply font configuration after theme loads."
-  (when (display-graphic-p)
-    (set-face-attribute 'default nil :font "Fira Code Nerd Font-10.5")))
+  (condition-case err
+      (when (display-graphic-p)
+        (set-face-attribute 'default nil :font "Fira Code Nerd Font-10.5"))
+    (error
+     ;; Silently fail if font isn't available yet
+     nil)))
 
 (add-hook 'after-load-theme-hook #'ehsan/apply-font-after-theme)
 
