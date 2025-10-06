@@ -333,7 +333,7 @@
 
 (add-hook 'after-init-hook #'+custom-mode-line-style)
 
-(defun +reapply-mode-line-style (_theme &optional _no-confirm)
+(defun +reapply-mode-line-style (&rest _args)
   "Reapply mode line style after theme change."
   ;; Add a small delay to ensure theme is fully loaded
   (run-with-timer 0.1 nil #'+custom-mode-line-style))
