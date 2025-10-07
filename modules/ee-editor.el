@@ -10,7 +10,23 @@
 (use-package windmove
   :straight (:type built-in)
   :config
-  (windmove-default-keybindings))
+  (windmove-default-keybindings 'shift))
+
+;; Auto-pairing parentheses, brackets, and quotes
+(use-package elec-pair
+  :ensure nil
+  :config
+  (electric-pair-mode 1)
+  (setq electric-pair-pairs
+        '((?\" . ?\")
+          (?\' . ?\')
+          (?\( . ?\))
+          (?\[ . ?\])
+          (?\{ . ?\})))
+  (setq electric-pair-preserve-balance t
+        electric-pair-delete-adjacent-pairs t
+        electric-pair-open-newline-between-pairs t
+        electric-pair-skip-whitespace nil))
 
 ;; Vundo - Visual undo trajectory
 (use-package vundo
