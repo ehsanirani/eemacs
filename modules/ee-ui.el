@@ -1,19 +1,19 @@
 ;;; ee-ui.el --- UI configuration for eemacs -*- lexical-binding: t; -*-
 
 ;; Theme packages
+(use-package modus-themes
+  :straight t)
+
+(use-package ef-themes
+  :straight t
+  :defer t)
+
 (use-package doom-themes
   :straight t
   :defer t
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
-
-(use-package ef-themes
-  :straight t
-  :defer t
-  :init
-  (setq ef-themes-mixed-fonts t
-        ef-themes-variable-pitch-ui t))
 
 (use-package catppuccin-theme
   :straight t
@@ -313,31 +313,5 @@
   (setq dired-listing-switches "-lah --group-directories-first"
         dired-dwim-target t
         dired-kill-when-opening-new-dired-buffer t))
-
-;; Custom mode line styling
-(defun +custom-mode-line-style ()
-  "Apply custom mode line styling."
-  (condition-case err
-      (progn
-        (set-face-attribute 'mode-line nil
-                            :box `(:line-width 4 :color ,(face-attribute 'default :background) :style nil)
-                            :overline (face-attribute 'default :foreground)
-                            :background (face-attribute 'default :background))
-
-        (set-face-attribute 'mode-line-inactive nil
-                            :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background) :style nil)
-                            :overline (face-attribute 'mode-line-inactive :foreground)))
-    (error
-     ;; Silently fail if faces aren't ready yet
-     nil)))
-
-(add-hook 'after-init-hook #'+custom-mode-line-style)
-
-(defun +reapply-mode-line-style (&rest _args)
-  "Reapply mode line style after theme change."
-  ;; Add a small delay to ensure theme is fully loaded
-  (run-with-timer 0.1 nil #'+custom-mode-line-style))
-
-(advice-add 'load-theme :after #'+reapply-mode-line-style)
 
 (provide 'ee-ui)

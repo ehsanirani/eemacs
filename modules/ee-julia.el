@@ -1,5 +1,8 @@
 ;;; ee-julia.el --- Julia configuration -*- lexical-binding: t; -*-
 
+;; Ensure Julia is in exec-path
+(add-to-list 'exec-path (expand-file-name "~/.juliaup/bin"))
+
 ;; Julia LSP client
 (use-package eglot-jl
   :straight t)
