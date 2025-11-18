@@ -35,6 +35,9 @@
 ;; Markdown support
 (require 'ee-markdown)
 
+;; Typst
+(require 'ee-typst)
+
 ;; Version control
 (require 'ee-vc)
 
