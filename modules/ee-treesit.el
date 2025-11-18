@@ -10,7 +10,8 @@
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript")
           (bash "https://github.com/tree-sitter/tree-sitter-bash")
           (json "https://github.com/tree-sitter/tree-sitter-json")
-          (yaml "https://github.com/tree-sitter/tree-sitter-yaml")))
+          (yaml "https://github.com/tree-sitter/tree-sitter-yaml")
+          (typst "https://github.com/uben0/tree-sitter-typst")))
 
   ;; Install missing grammars
   (defun treesit-install-missing-grammars ()
