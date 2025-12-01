@@ -7,6 +7,16 @@
 ;; Org mode directory
 (setq org-directory "~/org")
 
+;; AI Integration (gptel) - API Keys
+;; Option 1 (Recommended): Set environment variables in your shell config
+;;   Add to ~/.bashrc, ~/.zshrc, or ~/.profile:
+;;   export DEEPSEEK_API_KEY="your-deepseek-key-here"
+;;   export KIMI_API_KEY="your-kimi-key-here"
+;;
+;; Option 2: Set directly in this config file (uncomment and fill in):
+;; (setq deepseek-api-key "your-deepseek-key-here")
+;; (setq kimi-api-key "your-kimi-key-here")
+
 ;; Theme
 (load-theme 'catppuccin t)
 

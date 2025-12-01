@@ -60,5 +60,15 @@
   :diminish
   :custom (which-key-idle-delay 0.5))
 
+;; Copy environment variables from the shell
+;; This is essential for making shell environment variables (like API keys)
+;; available to Emacs when launched from a GUI
+(use-package exec-path-from-shell
+  :straight t
+  :if (memq window-system '(mac ns x pgtk))
+  :config
+  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "DEEPSEEK_API_KEY" "KIMI_API_KEY"))
+  (exec-path-from-shell-initialize))
+
 (provide 'ee-core)
 ;;; ee-core.el ends here
