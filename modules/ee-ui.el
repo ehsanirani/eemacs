@@ -5,7 +5,10 @@
 
 ;; Theme packages
 (use-package modus-themes
-  :straight t)
+  :straight t
+  :demand t  ;; Load immediately to ensure modus-themes.el is available before theme files compile
+  :init
+  (require 'modus-themes))
 
 (use-package ef-themes
   :straight t
