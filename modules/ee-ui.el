@@ -1,11 +1,11 @@
 ;;; ee-ui.el --- UI configuration for eemacs -*- lexical-binding: t; -*-
 
+;; Load color library early to avoid native-comp warnings in theme packages
+(require 'color)
+
 ;; Theme packages
 (use-package modus-themes
-  :straight t
-  :init
-  ;; Require color library to fix native-comp warning about color-rgb-to-hex
-  (require 'color))
+  :straight t)
 
 (use-package ef-themes
   :straight t
