@@ -2,7 +2,10 @@
 
 ;; Theme packages
 (use-package modus-themes
-  :straight t)
+  :straight t
+  :init
+  ;; Require color library to fix native-comp warning about color-rgb-to-hex
+  (require 'color))
 
 (use-package ef-themes
   :straight t
