@@ -28,9 +28,7 @@
 (use-package marginalia
   :straight t
   :after vertico
-  :init (marginalia-mode)
-  :config
-  (add-to-list 'marginalia-annotator-registry '(file marginalia-annotate-file nil)))
+  :init (marginalia-mode))
 
 (use-package nerd-icons-completion
   :straight t
