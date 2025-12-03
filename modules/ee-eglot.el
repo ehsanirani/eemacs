@@ -27,8 +27,6 @@
   (defun my-add-eglot-server (mode server-command)
     "Add SERVER-COMMAND for MODE if the server is available."
     (when (my-eglot-server-available-p server-command)
-      (add-to-list 'eglot-server-programs `(,mode . ,server-command))))
-
-  (setq eglot-server-programs '()))
+      (add-to-list 'eglot-server-programs `(,mode . ,server-command)))))
 
 (provide 'ee-eglot)
