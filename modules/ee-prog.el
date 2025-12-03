@@ -124,4 +124,7 @@
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 
+;; Enable Flymake for syntax checking
+(add-hook 'prog-mode-hook #'flymake-mode)
+
 (provide 'ee-prog)
