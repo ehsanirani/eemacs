@@ -58,7 +58,7 @@
         window-divider-default-bottom-width 2
         window-divider-default-right-width 2)
 
-  (setq display-line-numbers-type 'relative
+  (setq display-line-numbers-type 'absolute
         display-line-numbers-width 4
         display-line-numbers-widen t)
 
