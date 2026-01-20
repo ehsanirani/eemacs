@@ -120,9 +120,9 @@
           (rust-mode "{" "}" "/[*/]" nil nil)
           (go-mode "{" "}" "/[*/]" nil nil))))
 
-;; Prettify Symbols (Centaur-style) - display lambda as λ, etc.
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
-(setq prettify-symbols-unprettify-at-point 'right-edge)
+;; Prettify Symbols disabled - ligatures handled by ligature package in ee-ui.el
+;; (add-hook 'prog-mode-hook #'prettify-symbols-mode)
+;; (setq prettify-symbols-unprettify-at-point 'right-edge)
 
 ;; Enable Flymake for syntax checking
 (add-hook 'prog-mode-hook #'flymake-mode)

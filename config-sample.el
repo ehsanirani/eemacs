@@ -23,11 +23,11 @@
 ;; Font configuration
 (when (display-graphic-p)
   ;; Set font for current frame
-  (set-frame-font "Fira Code Nerd Font-10.5" nil t)
+  (set-frame-font "JetBrainsMono Nerd Font-10.5" nil t)
   ;; Set font for future frames
-  (add-to-list 'default-frame-alist '(font . "Fira Code Nerd Font-10.5"))
+  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-10.5"))
   ;; Set default font size
-  (set-face-attribute 'default nil :font "Fira Code Nerd Font-10.5")
+  (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font-10.5")
   (setq-default line-spacing 2))
 
 ;; Personal keybindings
@@ -39,7 +39,7 @@
 (defun ehsan/apply-font-after-theme ()
   "Apply font configuration after theme loads."
   (when (display-graphic-p)
-    (set-face-attribute 'default nil :font "Fira Code Nerd Font-10.5")))
+    (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font-10.5")))
 
 (add-hook 'after-load-theme-hook #'ehsan/apply-font-after-theme)
 

@@ -17,6 +17,7 @@
 (require 'ee-core)
 (require 'ee-completion)
 (require 'ee-ui)
+(require 'ee-fonts)
 (require 'ee-evil)
 (require 'ee-editor)
 

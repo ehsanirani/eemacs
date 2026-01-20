@@ -48,8 +48,12 @@
   (column-number-mode 1)
   (delete-selection-mode 1)
 
-  (set-fringe-mode 8)
+  ;; Fringes are now set asymmetrically in early-init.el (8px left, 13px right)
   (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
+
+  ;; Fill column indicator with dashed line
+  (setq-default fill-column 80)
+  (setq display-fill-column-indicator-character ?\u250a)
 
   (setq x-stretch-cursor t
         blink-cursor-interval 0.5
@@ -65,6 +69,11 @@
   (global-display-line-numbers-mode 1)
   (window-divider-mode 1)
 
+  ;; Fill column indicator disabled by default
+  ;; Uncomment to enable:
+  ;; (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+  ;; (add-hook 'text-mode-hook #'display-fill-column-indicator-mode)
+
   (when (fboundp 'pixel-scroll-precision-mode)
     (pixel-scroll-precision-mode 1)
     (setq pixel-scroll-precision-use-momentum t))
@@ -72,14 +81,39 @@
   (setq mouse-wheel-scroll-amount '(2 ((shift) . hscroll))
         mouse-wheel-scroll-amount-horizontal 2))
 
-;; Modeline
-(use-package doom-modeline
+;; Custom modeline (replaces doom-modeline)
+(require 'ee-modeline)
+(ee-modeline-mode 1)
+
+;; Ligatures for programming (proper ligature rendering)
+(use-package ligature
   :straight t
-  :init (doom-modeline-mode 1)
+  :hook (prog-mode . ligature-mode)
   :config
-  (setq doom-modeline-height 45
-        doom-modeline-bar-width 4
-        doom-modeline-window-width-limit 85))
+  (defvar ee-ligature-common
+    '("<<" ">>" ">>=" "<<=" "<=" ">=" "::" ":::" "..=" "::<" "=="
+      "*=" "+=" "<|" "<|>" "|>" "++" "+++" "&&" "||" "/=" "--" "#!"
+      "::=" "#[" "]#" "{|" "|}" "__"))
+  (defvar ee-ligature-c-like
+    '("!=" "<>" "/*" "*/" "//" "///" "^=" "|=" "?." "??" "<~>"))
+  (defvar ee-ligature-arrows
+    '("<-" "->" "<<-" "->>" "<--" "-->" "<---" "--->" "=>" "<==" "==>"
+      "<===" "===>" "<<=" "=>>" "<<==" "==>>" "<->" "<=>" "<~~" "~~>"
+      "<-->" "<--->" "<---->" "<==>" "<===>" "<====>"))
+
+  ;; Common ligatures for all modes
+  (ligature-set-ligatures 't '("ff" "ffi" "fi" "fj" "fl" "ft" "www"))
+  ;; Programming ligatures
+  (ligature-set-ligatures '(prog-mode conf-mode) (append ee-ligature-common ee-ligature-arrows))
+  ;; C-like language specific
+  (ligature-set-ligatures '(c-mode c++-mode rust-mode go-mode) ee-ligature-c-like))
+
+;; Vim-like tab bar
+(use-package vim-tab-bar
+  :straight t
+  :hook (emacs-startup . vim-tab-bar-mode)
+  :custom
+  (vim-tab-bar-show-groups t))
 
 ;; Icons
 (use-package nerd-icons
