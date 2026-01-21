@@ -1,333 +1,56 @@
-#+TITLE: eemacs - Ehsan's Modern Emacs Configuration
+#+TITLE: eemacs - Ehsan's Emacs Configuration
 #+AUTHOR: Ehsan
-#+OPTIONS: toc:2
 
 [[https://www.gnu.org/software/emacs/][https://img.shields.io/badge/Emacs-29.1+-7F5AB6.svg?logo=gnuemacs&logoColor=white]]
 [[https://github.com/radian-software/straight.el][https://img.shields.io/badge/package_manager-straight.el-green.svg]]
 
-A modern, modular Emacs configuration with sensible defaults, Vim emulation, and powerful development tools.
+A minimal Emacs configuration tailored for daily programming tasks in languages like Julia and Rust, working with notes in org-mode and markdown, and documents in Typst. Built with an eye-appealing UI, especially for coding.
 
-* 📋 Table of Contents
-:PROPERTIES:
-:TOC:      :include all
-:END:
+* Overview
 
-* ✨ Features
+This is a personal, minimal configuration that covers my daily workflow:
+- Programming in Julia, Rust, Python, Nix, and a few other languages
+- Note-taking and knowledge management with org-mode
+- Writing in markdown and Typst
+- An aesthetically pleasing UI optimized for coding
 
-** 🎨 Modern UI
-- Multiple premium themes (Modus, EF Themes, Doom, Catppuccin)
-- Custom mode-line with clean aesthetics
-- Vim-style tab bar for buffer management
-- Nerd Icons integration for visual clarity
-- Ligature support for programming fonts
-- Rainbow delimiters and syntax highlighting
-- Diff-hl for git gutter indicators
-- Pulsar for cursor line highlighting
-- Asymmetric fringes for a polished look
+The configuration uses modern Emacs features (tree-sitter, Eglot) with sensible defaults and optional Vim emulation. You can toggle between Vim and Emacs editing styles with ~C-c T~.
 
-** 📝 Completion & Navigation
-- [[https://github.com/minad/vertico][Vertico]] - Fast vertical completion UI
-- [[https://github.com/minad/corfu][Corfu]] - In-buffer completion popup
-- [[https://github.com/minad/consult][Consult]] - Powerful search and navigation commands
-- [[https://github.com/oantolin/embark][Embark]] - Context-aware actions
-- [[https://github.com/oantolin/orderless][Orderless]] - Flexible fuzzy matching
-- [[https://github.com/minad/marginalia][Marginalia]] - Rich annotations in minibuffer
-- [[https://github.com/minad/cape][Cape]] - Completion-at-point extensions
+* Installation
 
-** 👹 Vim Emulation
-- [[https://github.com/emacs-evil/evil][Evil mode]] - Extensible Vi layer
-- [[https://github.com/emacs-evil/evil-collection][Evil Collection]] - Evil bindings for Emacs modes
-- [[https://github.com/noctuid/general.el][General.el]] - Convenient key definitions
-- Easy toggle between Evil and Emacs modes (~C-c T~)
-
-** 🔧 Programming Support
-- [[https://github.com/joaotavora/eglot][Eglot]] - Built-in LSP client with performance optimizations
-- [[https://github.com/radian-software/apheleia][Apheleia]] - Async code formatting
-- [[https://github.com/renzmann/treesit-auto][Treesit-auto]] - Automatic tree-sitter grammar management
-- Language support:
-  - Python (with pytest integration)
-  - Rust (with rust-ts-mode)
-  - Julia (with eglot-jl)
-  - Nix
-  - C/C++
-  - JavaScript/TypeScript
-- [[https://github.com/jacktasia/dumb-jump][Dumb-jump]] - Fast code navigation
-- [[https://github.com/tarsius/hl-todo][hl-todo]] - TODO/FIXME highlighting
-- Breadcrumb navigation for code structure
-- Macro expansion tools (macrostep)
-- Code folding with hideshow
-- Flymake for syntax checking
-
-** 📚 Org Mode
-- [[https://github.com/org-roam/org-roam][Org-roam]] - Knowledge management
-- [[https://github.com/minad/org-modern][Org-modern]] - Modern styling
-- [[https://github.com/awth13/org-appear][Org-appear]] - Auto-toggle elements
-- [[https://github.com/io12/org-fragtog][Org-fragtog]] - LaTeX fragment previews
-- [[https://github.com/abo-abo/org-download][Org-download]] - Drag-and-drop images
-- Comprehensive capture templates
-- Advanced agenda and GTD workflow
-- Babel support for code execution
-
-** 🤖 AI Integration
-- [[https://github.com/karthink/gptel][gptel]] - GPT integration for Emacs
-- Pre-configured DeepSeek and Kimi (Moonshot AI) backends
-- Secure API key management via environment variables
-
-** 🖥️ Terminal Integration
-- [[https://github.com/akermu/emacs-libvterm][vterm]] - Fast terminal emulator
-- [[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] - VS Code-style bottom terminal (~C-`~)
-- Project-scoped terminals
-
-** 🌍 Multi-Language Support
-- RTL (Right-to-Left) language support (Arabic, Persian, Hebrew)
-- Emoji font configuration
-- Multi-script font setup
-
-** 📄 Additional Formats
-- Markdown with live preview
-- [[https://github.com/typst/typst-ts-mode][Typst]] support (modern typesetting)
-- Version control with [[https://github.com/magit/magit][Magit]]
-
-* 📦 Prerequisites
-
-** Required
-- *Emacs 29.1 or later* (for tree-sitter and modern features)
-- *Git* (for straight.el package manager)
-- *C/C++ compiler* (for native compilation and vterm)
-- *CMake* and *libtool* (for vterm)
-
-** Recommended
-- *Nerd Font* (JetBrains Mono Nerd Font, Cascadia Code, or similar)
-  - Download from [[https://www.nerdfonts.com/][nerdfonts.com]]
-  - Fonts with italic variants work best (JetBrains Mono recommended)
-- *ripgrep* (rg) - Fast search tool
-- *fd* - Fast file finder
-
-** Language Servers (optional, per language)
-Install LSP servers for languages you use:
-- Python: ~pip install python-lsp-server~
-- Rust: ~rustup component add rust-analyzer~
-- Julia: Automatic via eglot-jl
-- TypeScript: ~npm install -g typescript-language-server~
-- Bash: ~npm install -g bash-language-server~
-
-* 🚀 Installation
+** Requirements
+- Emacs 29.1+ (for tree-sitter support)
+- Git
+- A Nerd Font (recommended: JetBrains Mono Nerd Font)
 
 ** Quick Start
 
-1. *Backup your existing Emacs configuration*:
+1. Backup your existing configuration and clone this repository:
    #+begin_src bash
    mv ~/.emacs.d ~/.emacs.d.backup
-   mv ~/.emacs ~/.emacs.backup  # if it exists
-   #+end_src
-
-2. *Clone this repository*:
-   #+begin_src bash
    git clone https://github.com/ehsanirani/eemacs ~/.emacs.d
    #+end_src
 
-3. *Create your personal configuration*:
+2. Create your personal configuration:
    #+begin_src bash
    cd ~/.emacs.d
    cp config-sample.el config.el
    #+end_src
 
-4. *Edit* ~config.el~ *with your personal information*:
-   - Full name and email
-   - Org directory path
-   - Font preferences
-   - Theme choice
-   - API keys (optional, for AI features)
+3. Edit ~config.el~ with your personal settings (name, email, org directory, font, theme)
 
-5. *Launch Emacs*:
-   #+begin_src bash
-   emacs
+4. Launch Emacs. Packages will install automatically on first launch.
+
+5. After first launch, run:
+   #+begin_src emacs-lisp
+   M-x treesit-install-missing-grammars
+   M-x nerd-icons-install-fonts
    #+end_src
 
-   On first launch, straight.el will automatically install all packages. This may take a few minutes.
+* Structure
 
-** Post-Installation
+The configuration is organized into modular files in the ~modules/~ directory, each handling a specific aspect (UI, completion, programming languages, org-mode, etc.). Your personal settings go in ~config.el~ (not tracked by git).
 
-*** Install Tree-sitter Grammars
-After first launch, run:
-#+begin_src emacs-lisp
-M-x treesit-install-missing-grammars
-#+end_src
+* Acknowledgments
 
-This installs grammar files for syntax highlighting and code analysis.
-
-*** Install Nerd Icons Fonts
-Run once after installation:
-#+begin_src emacs-lisp
-M-x nerd-icons-install-fonts
-#+end_src
-
-* ⚙️ Configuration
-
-** File Structure
-#+begin_example
-~/.emacs.d/
-├── init.el              # Main entry point
-├── early-init.el        # Early initialization (UI setup)
-├── config.el            # Your personal configuration (gitignored)
-├── config-sample.el     # Sample configuration template
-└── modules/             # Feature modules
-    ├── ee-core.el       # Core settings & package manager
-    ├── ee-completion.el # Completion framework
-    ├── ee-ui.el         # UI and themes
-    ├── ee-fonts.el      # Font configuration
-    ├── ee-evil.el       # Vim emulation
-    ├── ee-editor.el     # Editor enhancements
-    ├── ee-prog.el       # Programming tools
-    ├── ee-treesit.el    # Tree-sitter setup
-    ├── ee-eglot.el      # LSP configuration
-    ├── ee-python.el     # Python support
-    ├── ee-julia.el      # Julia support
-    ├── ee-rust.el       # Rust support
-    ├── ee-nix.el        # Nix support
-    ├── ee-org.el        # Org mode
-    ├── ee-markdown.el   # Markdown support
-    ├── ee-typst.el      # Typst support
-    ├── ee-vc.el         # Version control
-    ├── ee-terminals.el  # Terminal emulators
-    ├── ee-rtl.el        # RTL languages
-    └── ee-ai.el         # AI integration
-#+end_example
-
-** Customization
-
-*** Themes
-Available themes out of the box:
-- Catppuccin (default)
-- Modus (built-in, highly accessible)
-- EF Themes
-- Doom Themes
-
-Switch themes with:
-#+begin_src emacs-lisp
-M-x load-theme RET catppuccin RET
-#+end_src
-
-Or set in ~config.el~:
-#+begin_src emacs-lisp
-(load-theme 'modus-vivendi t)  ; Dark Modus theme
-#+end_src
-
-*** Fonts
-Configure fonts in ~config.el~:
-#+begin_src emacs-lisp
-(when (display-graphic-p)
-  (set-frame-font "JetBrainsMono Nerd Font-10.5" nil t)
-  (add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-10.5"))
-  (setq-default line-spacing 2))
-#+end_src
-
-*** AI Integration
-Set API keys via environment variables (recommended):
-#+begin_src bash
-# Add to ~/.bashrc, ~/.zshrc, or ~/.profile
-export DEEPSEEK_API_KEY="your-deepseek-api-key"
-export KIMI_API_KEY="your-kimi-api-key"
-#+end_src
-
-Or directly in ~config.el~ (less secure):
-#+begin_src emacs-lisp
-(setq deepseek-api-key "your-key-here")
-(setq kimi-api-key "your-key-here")
-#+end_src
-
-* ⌨️ Key Bindings
-
-** General
-| Key       | Command                    | Description                    |
-|-----------+----------------------------+--------------------------------|
-| ~C-c T~   | Toggle Evil/Emacs mode     | Switch between Vim and Emacs   |
-| ~C-c L~   | Toggle ligatures (buffer)  | Enable/disable ligatures       |
-| ~C-c M-L~ | Toggle ligatures (global)  | Global ligature toggle         |
-| ~C-`~     | vterm-toggle               | Open/close terminal            |
-| ~C-.~     | embark-act                 | Context-aware actions          |
-| ~C-;~     | embark-dwim                | Embark "do what I mean"        |
-
-** Evil Mode (Vim Emulation)
-Standard Vim keybindings when Evil mode is active.
-
-** Completion
-| Key         | Command                   | Description                 |
-|-------------+---------------------------+-----------------------------|
-| ~C-x C-f~   | find-file                 | Find file (with Vertico)    |
-| ~C-x b~     | consult-buffer            | Switch buffer               |
-| ~M-s l~     | consult-line              | Search in buffer            |
-| ~M-s r~     | consult-ripgrep           | Project-wide search         |
-| ~M-g o~     | consult-outline           | Navigate headings           |
-| ~M-g i~     | consult-imenu             | Navigate definitions        |
-| ~C-c p p~   | completion-at-point       | Complete at point           |
-| ~C-c p f~   | cape-file                 | Complete file path          |
-
-** Org Mode
-| Key         | Command           | Description          |
-|-------------+-------------------+----------------------|
-| ~C-c a~     | org-agenda        | Open agenda          |
-| ~C-c c~     | org-capture       | Capture note/task    |
-| ~C-c l~     | org-store-link    | Store link           |
-| ~C-c C-w~   | org-refile        | Refile heading       |
-
-** Programming
-| Key         | Command                  | Description              |
-|-------------+--------------------------+--------------------------|
-| ~M-.~       | xref-find-definitions    | Jump to definition       |
-| ~M-,~       | xref-pop-marker-stack    | Jump back                |
-| ~C-c m~     | macrostep-expand         | Expand macro             |
-| ~M-x~       | eglot                    | Start LSP server         |
-
-** AI (gptel)
-| Key         | Command           | Description          |
-|-------------+-------------------+----------------------|
-| ~C-c RET~   | gptel-send        | Send to AI           |
-| ~M-x~       | gptel             | Start AI chat        |
-
-* 🎯 Workflow Tips
-
-** Getting Started with Evil Mode
-If you're new to Vim keybindings:
-1. Press ~C-c T~ to toggle Evil mode off (use Emacs keybindings)
-2. Learn Vim gradually by toggling it on when ready
-3. Evil Collection provides Vim bindings for most Emacs modes
-
-** Efficient Code Navigation
-1. Use ~consult-imenu~ (~M-g i~) to jump to functions/classes
-2. Use ~consult-line~ (~M-s l~) for in-buffer fuzzy search
-3. Use ~consult-ripgrep~ (~M-s r~) for project-wide search
-
-** Org Mode Productivity
-1. Set your ~org-directory~ in ~config.el~
-2. Use ~org-capture~ (~C-c c~) to quickly capture tasks/notes
-3. Use ~org-agenda~ (~C-c a~) for daily planning
-4. Try ~org-roam~ for Zettelkasten-style note-taking
-
-** AI-Assisted Coding
-1. Configure API keys (see AI Integration section)
-2. Open a buffer and run ~M-x gptel~
-3. Type your question and press ~C-c RET~ to send
-4. Get code suggestions, explanations, and refactoring help
-
-* 🏗️ Architecture
-
-** Design Philosophy
-- *Modular*: Each feature in its own module for easy customization
-- *Modern*: Uses latest Emacs 29+ features (tree-sitter, Eglot)
-- *Fast*: Optimized startup with lazy loading and native compilation
-- *Batteries included*: Comprehensive defaults that just work
-- *Hackable*: Well-commented code, easy to extend
-
-** Startup Optimization
-- GC threshold increased during startup, restored after
-- File-name handlers disabled during init
-- Deferred package loading with ~:defer~ and ~:hook~
-- Native compilation for better performance
-
-* 🙏 Acknowledgments
-
-Inspired by excellent configurations:
-- [[https://github.com/abougouffa/minemacs][MinEmacs]] - Modern, minimal approach
-- [[https://github.com/seagle0128/.emacs.d][Centaur Emacs]] - Comprehensive features
-- [[https://github.com/LionyxML/emacs-kick][Emacs Kick]] - Kickstart philosophy
+Inspired by [[https://github.com/abougouffa/minemacs][MinEmacs]], [[https://github.com/seagle0128/.emacs.d][Centaur Emacs]], and [[https://github.com/LionyxML/emacs-kick][Emacs Kick]].
