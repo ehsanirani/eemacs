@@ -51,6 +51,9 @@
 ;; AI integration
 (require 'ee-ai)
 
+;; Claude Code IDE
+(require 'ee-claude)
+
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
 
