@@ -45,5 +45,12 @@
         vundo-window-max-height 12
         vundo-window-max-width 60))
 
+;; Auto-revert: automatically reload files changed on disk
+(use-package autorevert
+  :hook (after-init . global-auto-revert-mode)
+  :custom
+  (global-auto-revert-non-file-buffers t)
+  (auto-revert-verbose nil))
+
 (provide 'ee-editor)
 ;;; ee-editor.el ends here
