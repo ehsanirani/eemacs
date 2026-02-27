@@ -20,8 +20,10 @@
   (claude-code-ide-vterm-anti-flicker t)
   (claude-code-ide-vterm-render-delay 0.005)
   (claude-code-ide-prevent-reflow-glitch t)
+  ;; MCP server for exposing Emacs tools to Claude
+  (claude-code-ide-enable-mcp-server t)
   :config
-  ;; Enable MCP tools (LSP/xref, tree-sitter, imenu, project)
+  ;; Register Emacs MCP tools (LSP/xref, tree-sitter, imenu, project, diagnostics)
   (claude-code-ide-emacs-tools-setup))
 
 (provide 'ee-claude)
