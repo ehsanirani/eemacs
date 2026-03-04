@@ -42,4 +42,5 @@ org-roam.db
 !early-init.el
 !init.el
 !modules/
+!docs/
 config.el
