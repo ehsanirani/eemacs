@@ -3,6 +3,141 @@
 ;; Best-of-both approach:
 ;; - MinEmacs: rich GTD taxonomy, academic LaTeX export, citar bibliography, org-modern faces
 ;; - Centaur: org-roam knowledge graph, org-pomodoro, capture with clock-in, polished agenda UI
+;; - Multi-project: distributed notes/TODOs across project directories
+
+;;;; ============================================================
+;;;; Multi-project support
+;;;; ============================================================
+
+(defvar ee-org-projects-file
+  (expand-file-name "org-projects.el" user-emacs-directory)
+  "File storing registered project directories.")
+
+(defvar ee-org-project-directories nil
+  "List of project directories that contain org files.
+Each directory may contain a TODO.org for tasks and a notes/ subdirectory
+for org-roam-indexed notes. Managed via `ee-org-register-project' and
+`ee-org-unregister-project'.")
+
+(defun ee-org--load-projects ()
+  "Load registered project directories from `ee-org-projects-file'."
+  (when (file-exists-p ee-org-projects-file)
+    (with-temp-buffer
+      (insert-file-contents ee-org-projects-file)
+      (setq ee-org-project-directories (read (current-buffer))))))
+
+(defun ee-org--save-projects ()
+  "Save registered project directories to `ee-org-projects-file'."
+  (with-temp-file ee-org-projects-file
+    (prin1 ee-org-project-directories (current-buffer))))
+
+(defun ee-org-register-project (dir)
+  "Register DIR as an org-aware project directory.
+This adds DIR's TODO.org to the agenda and its notes/ folder to org-roam.
+Creates TODO.org and notes/ in DIR if they don't exist."
+  (interactive "DProject directory: ")
+  (let ((dir (expand-file-name (file-name-as-directory dir))))
+    (unless (member dir ee-org-project-directories)
+      (push dir ee-org-project-directories)
+      (ee-org--save-projects)
+      ;; Create TODO.org if missing
+      (let ((todo-file (expand-file-name "TODO.org" dir)))
+        (unless (file-exists-p todo-file)
+          (with-temp-file todo-file
+            (insert (format "#+title: %s Tasks\n#+filetags: :project:\n\n* Tasks\n\n* Notes\n"
+                            (file-name-nondirectory (directory-file-name dir)))))))
+      ;; Create notes/ if missing
+      (let ((notes-dir (expand-file-name "notes" dir)))
+        (unless (file-exists-p notes-dir)
+          (make-directory notes-dir t)))
+      ;; Update agenda files
+      (ee-org--update-agenda-files)
+      ;; Update org-roam dirs
+      (when (bound-and-true-p org-roam-directory)
+        (ee-org--update-roam-extra-dirs))
+      (message "Registered project: %s" dir))))
+
+(defun ee-org-unregister-project (dir)
+  "Unregister DIR as an org-aware project directory."
+  (interactive
+   (list (completing-read "Unregister project: " ee-org-project-directories nil t)))
+  (let ((dir (expand-file-name (file-name-as-directory dir))))
+    (setq ee-org-project-directories (delete dir ee-org-project-directories))
+    (ee-org--save-projects)
+    (ee-org--update-agenda-files)
+    (when (bound-and-true-p org-roam-directory)
+      (ee-org--update-roam-extra-dirs))
+    (message "Unregistered project: %s" dir)))
+
+(defun ee-org-list-projects ()
+  "List all registered org-aware project directories."
+  (interactive)
+  (if ee-org-project-directories
+      (message "Registered projects:\n%s"
+               (mapconcat (lambda (d) (concat "  - " d))
+                          ee-org-project-directories "\n"))
+    (message "No projects registered. Use M-x ee-org-register-project")))
+
+(defun ee-org--collect-project-todo-files ()
+  "Collect TODO.org files from all registered project directories."
+  (let (files)
+    (dolist (dir ee-org-project-directories)
+      (let ((todo (expand-file-name "TODO.org" dir)))
+        (when (file-exists-p todo)
+          (push todo files))))
+    (nreverse files)))
+
+(defun ee-org--collect-project-notes-dirs ()
+  "Collect notes/ directories from all registered project directories."
+  (let (dirs)
+    (dolist (dir ee-org-project-directories)
+      (let ((notes-dir (expand-file-name "notes" dir)))
+        (when (file-exists-p notes-dir)
+          (push notes-dir dirs))))
+    (nreverse dirs)))
+
+(defun ee-org--update-agenda-files ()
+  "Rebuild `org-agenda-files' from central org + project TODO files."
+  (when (bound-and-true-p org-directory)
+    (setq org-agenda-files
+          (append
+           ;; Central org files
+           (mapcar (lambda (f) (expand-file-name f org-directory))
+                   '("inbox.org" "agenda.org" "projects.org"))
+           ;; Project TODO.org files
+           (ee-org--collect-project-todo-files)))))
+
+(defun ee-org--update-roam-extra-dirs ()
+  "Update `org-roam-extra-directories' to include project notes/ dirs."
+  (when (boundp 'org-roam-extra-directories)
+    (setq org-roam-extra-directories (ee-org--collect-project-notes-dirs))))
+
+(defun ee-org--current-project-dir ()
+  "Return the current project root, or nil."
+  (or (and (fboundp 'project-current)
+           (when-let* ((proj (project-current nil)))
+             (expand-file-name (file-name-as-directory (project-root proj)))))
+      default-directory))
+
+(defun ee-org--current-project-todo ()
+  "Return TODO.org path for the current project, creating it if needed."
+  (let* ((dir (ee-org--current-project-dir))
+         (todo (expand-file-name "TODO.org" dir)))
+    (unless (file-exists-p todo)
+      (with-temp-file todo
+        (insert (format "#+title: %s Tasks\n#+filetags: :project:\n\n* Tasks\n\n* Notes\n"
+                        (file-name-nondirectory (directory-file-name dir))))))
+    todo))
+
+(defun ee-org--current-project-notes-dir ()
+  "Return notes/ path for the current project, creating it if needed."
+  (let ((dir (expand-file-name "notes" (ee-org--current-project-dir))))
+    (unless (file-exists-p dir)
+      (make-directory dir t))
+    dir))
+
+;; Load projects on startup
+(ee-org--load-projects)
 
 ;;;; ============================================================
 ;;;; Core Org
@@ -94,12 +229,10 @@
   ;; Default notes file
   (setq org-default-notes-file (expand-file-name "inbox.org" org-directory))
 
-  ;; Agenda files
-  (setq org-agenda-files
-        (mapcar (lambda (f) (expand-file-name f org-directory))
-                '("inbox.org" "agenda.org" "projects.org")))
+  ;; Agenda files — central + project TODO files
+  (ee-org--update-agenda-files)
 
-  ;; Capture templates — Centaur style (clock-in) with research additions
+  ;; Capture templates — central + project-aware
   (setq org-capture-templates
         `(("t" "Todo" entry (file ,(expand-file-name "inbox.org" org-directory))
            "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
@@ -115,7 +248,16 @@
            "* %^{Title} :research:\n%U\nSource: %a\n\n%?" :clock-in t :clock-resume t)
           ("b" "Book/Paper" entry (file+olp+datetree
                                    ,(expand-file-name "reading.org" org-directory))
-           "* %^{Title} %^g\n%U\nAuthor: %^{Author}\n\n%?")))
+           "* %^{Title} %^g\n%U\nAuthor: %^{Author}\n\n%?")
+
+          ;; Project-local captures
+          ("p" "Project")
+          ("pt" "Project todo" entry (file ee-org--current-project-todo)
+           "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+          ("pn" "Project note" entry (file ee-org--current-project-todo)
+           "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+          ("pi" "Project idea" entry (file ee-org--current-project-todo)
+           "* IDEA %?\n%U\n")))
 
   ;; Tags — research-oriented
   (setq org-tag-alist '((:startgroup . nil)
@@ -125,7 +267,7 @@
                         ("emacs" . ?e) ("linux" . ?l) ("programming" . ?P)
                         ("IMPORTANT" . ?!) ("URGENT" . ?u)))
 
-  ;; Refile
+  ;; Refile — include project TODO files as targets
   (setq org-refile-targets '((nil :maxlevel . 3)
                              (org-agenda-files :maxlevel . 3))
         org-outline-path-complete-in-steps nil
@@ -326,6 +468,8 @@
         (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (unless (file-exists-p org-roam-directory)
     (make-directory org-roam-directory t))
+  ;; Index project notes/ directories alongside central roam/
+  (ee-org--update-roam-extra-dirs)
   (org-roam-db-autosync-mode))
 
 ;; Interactive graph visualization
