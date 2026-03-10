@@ -12,6 +12,11 @@
   :config
   (windmove-default-keybindings 'shift))
 
+;; Window layout undo/redo — C-c <left> to undo, C-c <right> to redo
+(use-package winner
+  :straight (:type built-in)
+  :hook (after-init . winner-mode))
+
 ;; Auto-pairing parentheses, brackets, and quotes
 (use-package elec-pair
   :ensure nil
