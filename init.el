@@ -60,6 +60,9 @@
 ;; ECA (AI pair-programming client)
 (require 'ee-eca)
 
+;; Startup dashboard
+(require 'ee-dashboard)
+
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
 

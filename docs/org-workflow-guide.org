@@ -127,7 +127,7 @@ The "current project" is detected automatically from the file you're editing (vi
 To make a project's TODOs appear in your agenda and its notes searchable in org-roam:
 
 #+begin_example
-M-x ee-org-register-project RET ~/projects/my-dsp-project RET
+C-c P r  ~/projects/my-dsp-project RET
 #+end_example
 
 This does three things:
@@ -138,7 +138,7 @@ This does three things:
 ** Unregistering a Project
 
 #+begin_example
-M-x ee-org-unregister-project RET
+C-c P u
 #+end_example
 
 Pick from a list of registered projects. This removes it from the agenda and org-roam indexing. It does NOT delete any files.
@@ -146,28 +146,16 @@ Pick from a list of registered projects. This removes it from the agenda and org
 ** Listing Projects
 
 #+begin_example
-M-x ee-org-list-projects RET
+C-c P l
 #+end_example
 
 Shows all registered project directories.
-
-** Per-Project .dir-locals.el (optional)
-
-For project-specific org settings, create a =.dir-locals.el= in the project root:
-
-#+begin_src emacs-lisp
-;;; .dir-locals.el
-((org-mode . ((org-roam-directory . "~/projects/my-dsp-project/notes")
-              (citar-bibliography . ("~/projects/my-dsp-project/references.bib")))))
-#+end_src
-
-This makes org-roam commands and citation lookups use project-local files when you're editing inside that project.
 
 ** Example: Setting Up a New Research Project
 
 #+begin_example
 ;; 1. Register the project
-M-x ee-org-register-project RET ~/projects/new-research RET
+C-c P r  ~/projects/new-research RET
 
 ;; 2. Open the auto-created TODO.org
 C-x C-f ~/projects/new-research/TODO.org RET
@@ -243,7 +231,7 @@ NO    ->  rejected / declined
 ,** IDEA Maybe add GPU acceleration?
 #+end_example
 
-* Agenda --- Your Daily Dashboard
+* Agenda --- Navigating Your Day
 
 Press =C-c a= then:
 
@@ -315,56 +303,58 @@ roam has the mathematical foundation.
 3. =C-c n l= -> see all backlinks across all projects
 4. =C-c n u= -> visual graph showing connections between projects
 
-* Pomodoro --- Focused Work Sessions
+* Additional Features
 
-On any TODO item (central or project-local):
+** Pomodoro (Focused Work Sessions)
 
-- =C-c C-x m= --- start a 25-minute pomodoro
-- Modeline shows countdown
-- After 25 min, notification + 5-min break
-- Every 4 pomodoros, longer break
+- =C-c C-x m= --- start 25-min pomodoro on current task
+- =K= in agenda view --- start pomodoro on task at point
+- Modeline shows countdown; 5-min break after each, longer break after 4
 
-In the agenda, press =K= on a task to start a pomodoro for it.
+** Bibliography (Citations)
 
-* Bibliography --- For Papers and Citations
+- =C-c C-x @= --- insert citation from =.bib= file
+- Set =#+bibliography: ~/org/references.bib= in file header
+- Exports to =\cite{}= with biblatex in LaTeX output
 
-When writing a research document in org:
+** Exporting
 
-- =C-c C-x @= --- insert a citation (citar searches your =.bib= file)
-- Citations render in the buffer with icons (PDF, note, link)
-- On export to LaTeX, they become proper =\cite{}= commands with biblatex
-
-Set your bibliography in a file header:
-
-#+begin_example
-#+bibliography: ~/org/references.bib
-#+cite_export: biblatex
-
-As shown by [cite:@smith2024], the algorithm converges...
-#+end_example
-
-For project-local bibliographies, use =.dir-locals.el=:
-
-#+begin_src emacs-lisp
-((org-mode . ((citar-bibliography . ("./references.bib")))))
-#+end_src
-
-* Exporting --- Getting Output
-
-| Format              | How                                                      |
-|---------------------+----------------------------------------------------------|
-| PDF (LaTeX)         | =C-c C-e l p= --- academic quality with booktabs tables |
-| Beamer slides       | =C-c C-e l P= --- from org headings to presentation     |
-| HTML                | =C-c C-e h h=                                           |
-| GitHub Markdown     | =C-c C-e g g= (ox-gfm)                                 |
-| ODT (LibreOffice)   | =C-c C-e o o=                                           |
+| Format              | Keys              |
+|---------------------+-------------------|
+| PDF (LaTeX)         | =C-c C-e l p=     |
+| Beamer slides       | =C-c C-e l P=     |
+| HTML                | =C-c C-e h h=     |
+| GitHub Markdown     | =C-c C-e g g=     |
+| ODT (LibreOffice)   | =C-c C-e o o=     |
 
 Exports run in the background (async) so Emacs stays responsive.
+
+* Advanced Topics
+
+** Archiving
+
+When tasks are completed and no longer relevant to the active agenda:
+
+- =C-c C-x C-a= --- archive the entry at point
+- Archived items move to =archive/= and are removed from the agenda but preserved for reference
+
+** Per-Project .dir-locals.el
+
+For project-specific org settings, create a =.dir-locals.el= in the project root:
+
+#+begin_src emacs-lisp
+;;; .dir-locals.el
+((org-mode . ((org-roam-directory . "~/projects/my-dsp-project/notes")
+              (citar-bibliography . ("~/projects/my-dsp-project/references.bib")))))
+#+end_src
+
+This makes org-roam commands and citation lookups use project-local files when you're editing inside that project.
 
 * Daily Routine Summary
 
 | When                | What                              | Keys                         |
 |---------------------+-----------------------------------+------------------------------|
+| *Morning*           | Open dashboard                    | =C-c d=                     |
 | *Morning*           | Check agenda (all projects)       | =C-c a a=                   |
 | *Throughout day*    | Capture anything                  | =C-c x= -> pick template    |
 | *Working on project* | Capture to that project           | =C-c x p t= / =p n= / =p i= |
@@ -373,7 +363,7 @@ Exports run in the background (async) so Emacs stays responsive.
 | *End of day*        | Journal entry                     | =C-c x j=                   |
 | *Weekly*            | Process inbox, refile to projects | =inbox.org=, =C-c C-w=      |
 | *Weekly*            | Review all projects               | =C-c a m= -> =+PROJ=        |
-| *New project*       | Register it                       | =M-x ee-org-register-project= |
+| *New project*       | Register it                       | =C-c P r=                   |
 
 * Quick Reference --- All Commands
 
@@ -381,6 +371,7 @@ Exports run in the background (async) so Emacs stays responsive.
 
 | Keys       | Command               |
 |------------+-----------------------|
+| =C-c d=    | Open dashboard        |
 | =C-c a=    | Open agenda           |
 | =C-c x=    | Capture               |
 | =C-c n f=  | Find/create roam node |
@@ -391,21 +382,22 @@ Exports run in the background (async) so Emacs stays responsive.
 
 ** In Org Buffers
 
-| Keys        | Command            |
-|-------------+--------------------|
-| =C-c C-t=   | Cycle TODO state  |
-| =C-c C-s=   | Schedule          |
-| =C-c C-d=   | Deadline          |
-| =C-c C-w=   | Refile            |
-| =C-c l=     | Store link        |
-| =C-c C-x m= | Start pomodoro   |
-| =C-c C-e=   | Export dispatcher |
-| =M-h/l/j/k= | Org meta movement |
+| Keys         | Command            |
+|--------------+--------------------|
+| =C-c C-t=    | Cycle TODO state  |
+| =C-c C-s=    | Schedule          |
+| =C-c C-d=    | Deadline          |
+| =C-c C-w=    | Refile            |
+| =C-c C-x C-a= | Archive entry   |
+| =C-c l=      | Store link        |
+| =C-c C-x m=  | Start pomodoro   |
+| =C-c C-e=    | Export dispatcher |
+| =M-h/l/j/k=  | Org meta movement |
 
 ** Project Management
 
-| Command                          | Action                      |
-|----------------------------------+-----------------------------|
-| =M-x ee-org-register-project=   | Add project to agenda+roam  |
-| =M-x ee-org-unregister-project= | Remove project              |
-| =M-x ee-org-list-projects=      | Show registered projects    |
+| Keys       | Command                          | Action                      |
+|------------+----------------------------------+-----------------------------|
+| =C-c P r=  | =ee-org-register-project=       | Add project to agenda+roam  |
+| =C-c P u=  | =ee-org-unregister-project=     | Remove project              |
+| =C-c P l=  | =ee-org-list-projects=          | Show registered projects    |

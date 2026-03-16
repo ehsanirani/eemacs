@@ -101,9 +101,11 @@ Creates TODO.org and notes/ in DIR if they don't exist."
   (when (bound-and-true-p org-directory)
     (setq org-agenda-files
           (append
-           ;; Central org files
-           (mapcar (lambda (f) (expand-file-name f org-directory))
-                   '("inbox.org" "agenda.org" "projects.org"))
+           ;; Central org files — only include those that exist
+           (cl-remove-if-not
+            #'file-exists-p
+            (mapcar (lambda (f) (expand-file-name f org-directory))
+                    '("inbox.org" "agenda.org" "projects.org")))
            ;; Project TODO.org files
            (ee-org--collect-project-todo-files)))))
 
@@ -251,6 +253,8 @@ Creates TODO.org and notes/ in DIR if they don't exist."
            "* %^{Title} %^g\n%U\nAuthor: %^{Author}\n\n%?")
 
           ;; Project-local captures
+          ;; NOTE: (file ee-org--current-project-todo) works because org-capture
+          ;; calls functionp symbols via funcall in org-capture-target-buffer.
           ("p" "Project")
           ("pt" "Project todo" entry (file ee-org--current-project-todo)
            "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
@@ -527,6 +531,13 @@ Creates TODO.org and notes/ in DIR if they don't exist."
   (define-key org-mode-map (kbd "M-l") 'org-metaright)
   (define-key org-mode-map (kbd "M-j") 'org-metadown)
   (define-key org-mode-map (kbd "M-k") 'org-metaup))
+
+;; Project management keybindings (global — work from any buffer)
+(define-prefix-command 'ee-org-project-map)
+(global-set-key (kbd "C-c P") 'ee-org-project-map)
+(define-key ee-org-project-map (kbd "r") #'ee-org-register-project)
+(define-key ee-org-project-map (kbd "u") #'ee-org-unregister-project)
+(define-key ee-org-project-map (kbd "l") #'ee-org-list-projects)
 
 (provide 'ee-org)
 ;;; ee-org.el ends here
