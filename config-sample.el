@@ -8,15 +8,23 @@
 (setq org-directory "~/org")
 
 ;; AI Integration (gptel) - API Keys
-;; Option 1 (Recommended): Set environment variables in your shell config
-;;   Add to ~/.bashrc, ~/.zshrc, or ~/.profile:
+;; Keys are resolved in order: custom variable → environment variable → agenix secret file.
+;; On NixOS + agenix, keys at ~/.config/secrets/ are read automatically — no extra config needed.
+;;
+;; Option 1: Environment variables (shell config or systemd user env)
 ;;   export DEEPSEEK_API_KEY="your-deepseek-key-here"
 ;;   export KIMI_API_KEY="your-kimi-key-here"
-;;   export ANTHROPIC_API_KEY="your-anthropic-key-here"  ; needed by agent-shell & eca
+;;   export ANTHROPIC_API_KEY="your-anthropic-key-here"
 ;;
 ;; Option 2: Set directly in this config file (uncomment and fill in):
 ;; (setq deepseek-api-key "your-deepseek-key-here")
 ;; (setq kimi-api-key "your-kimi-key-here")
+;; (setq anthropic-api-key "your-anthropic-key-here")
+;;
+;; Option 3: Agenix secret files (override default paths if needed):
+;; (setq ee-ai-deepseek-secret-file "~/.config/secrets/deepseek-api-key")
+;; (setq ee-ai-kimi-secret-file "~/.config/secrets/kimi-api-key")
+;; (setq ee-ai-anthropic-secret-file "~/.config/secrets/anthropic-api-key")
 
 ;; Theme
 (load-theme 'catppuccin t)

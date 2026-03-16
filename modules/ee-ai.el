@@ -1,12 +1,11 @@
 ;;; ee-ai.el --- AI integration for eemacs -*- lexical-binding: t; -*-
 
-;; API Key Configuration
-;; You can set API keys in one of these ways:
-;; 1. Environment variables (recommended): Set DEEPSEEK_API_KEY and KIMI_API_KEY in your shell
-;;    - Add to ~/.bashrc, ~/.zshrc, or ~/.profile: export DEEPSEEK_API_KEY="your-key"
-;;    - The exec-path-from-shell package will import them into Emacs
-;; 2. In config.el: Set (setq deepseek-api-key "your-key") before loading this module
-;; 3. Directly in this file (not recommended for security): Replace the fallback values below
+;; API Key Configuration — resolved in order:
+;; 1. Custom variable set in config.el  (setq deepseek-api-key "sk-...")
+;; 2. Environment variable              (DEEPSEEK_API_KEY, KIMI_API_KEY, ANTHROPIC_API_KEY)
+;; 3. Agenix secret file on disk        (e.g. ~/.config/secrets/deepseek-api-key)
+;;
+;; For NixOS + agenix setups, method 3 is automatic — no shell config needed.
 
 ;; Custom variables for API keys (can be set in config.el)
 (defvar deepseek-api-key nil
@@ -14,6 +13,34 @@
 
 (defvar kimi-api-key nil
   "API key for Kimi (Moonshot AI). Can be set in config.el or via KIMI_API_KEY environment variable.")
+
+(defvar anthropic-api-key nil
+  "API key for Anthropic Claude. Can be set in config.el or via ANTHROPIC_API_KEY environment variable.")
+
+;; Agenix secret file paths (override in config.el if your paths differ)
+(defvar ee-ai-deepseek-secret-file "~/.config/secrets/deepseek-api-key"
+  "Path to agenix-decrypted DeepSeek API key file.")
+
+(defvar ee-ai-kimi-secret-file "~/.config/secrets/kimi-api-key"
+  "Path to agenix-decrypted Kimi API key file.")
+
+(defvar ee-ai-anthropic-secret-file "~/.config/secrets/anthropic-api-key"
+  "Path to agenix-decrypted Anthropic API key file.")
+
+(defun ee-ai--read-secret (file)
+  "Read a single-line secret from FILE, or nil if FILE is unreadable."
+  (let ((path (expand-file-name file)))
+    (when (file-readable-p path)
+      (string-trim
+       (with-temp-buffer
+         (insert-file-contents path)
+         (buffer-string))))))
+
+(defun ee-ai--get-key (custom-var env-var secret-file)
+  "Resolve an API key from CUSTOM-VAR, ENV-VAR, or SECRET-FILE (first non-nil wins)."
+  (or custom-var
+      (getenv env-var)
+      (ee-ai--read-secret secret-file)))
 
 ;; GPT integration with Emacs
 (use-package gptel
@@ -24,11 +51,16 @@
   ;; Key bindings
   (define-key gptel-mode-map (kbd "C-c RET") 'gptel-send)
 
-  ;; Get API keys from environment or custom variables
-  (let ((deepseek-key (or deepseek-api-key
-                         (getenv "DEEPSEEK_API_KEY")))
-        (kimi-key (or kimi-api-key
-                     (getenv "KIMI_API_KEY"))))
+  ;; Resolve API keys (custom var → env var → agenix secret file)
+  (let ((deepseek-key (ee-ai--get-key deepseek-api-key
+                                      "DEEPSEEK_API_KEY"
+                                      ee-ai-deepseek-secret-file))
+        (kimi-key     (ee-ai--get-key kimi-api-key
+                                      "KIMI_API_KEY"
+                                      ee-ai-kimi-secret-file))
+        (anthropic-key (ee-ai--get-key anthropic-api-key
+                                       "ANTHROPIC_API_KEY"
+                                       ee-ai-anthropic-secret-file)))
 
     ;; Warn if API keys are not set
     (unless deepseek-key
@@ -58,6 +90,15 @@
         :stream t
         :key kimi-key
         :models '(moonshot-v1-8k moonshot-v1-32k moonshot-v1-128k)))
+
+    ;; Anthropic Claude backend
+    (when anthropic-key
+      (gptel-make-anthropic "Claude"
+        :stream t
+        :key anthropic-key
+        :models '(claude-sonnet-4-5-20250929
+                  claude-opus-4-6
+                  claude-haiku-4-5-20251001)))
 
     ;; Set default backend and model (only if DeepSeek is configured)
     (when deepseek-key
