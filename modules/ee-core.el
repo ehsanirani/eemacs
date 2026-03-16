@@ -70,7 +70,8 @@
   :straight t
   :if (memq window-system '(mac ns x pgtk))
   :config
-  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "DEEPSEEK_API_KEY" "KIMI_API_KEY" "ANTHROPIC_API_KEY"))
+  ;; Only import PATH/MANPATH — API keys are read from agenix secret files in ee-ai.el
+  (setq exec-path-from-shell-variables '("PATH" "MANPATH"))
   (exec-path-from-shell-initialize))
 
 (provide 'ee-core)
