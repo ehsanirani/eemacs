@@ -12,6 +12,7 @@
 ;;   Add to ~/.bashrc, ~/.zshrc, or ~/.profile:
 ;;   export DEEPSEEK_API_KEY="your-deepseek-key-here"
 ;;   export KIMI_API_KEY="your-kimi-key-here"
+;;   export ANTHROPIC_API_KEY="your-anthropic-key-here"  ; needed by agent-shell & eca
 ;;
 ;; Option 2: Set directly in this config file (uncomment and fill in):
 ;; (setq deepseek-api-key "your-deepseek-key-here")

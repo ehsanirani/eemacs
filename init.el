@@ -54,6 +54,12 @@
 ;; Claude Code IDE
 (require 'ee-claude)
 
+;; Agent Shell (multi-agent ACP interface)
+(require 'ee-agent-shell)
+
+;; ECA (AI pair-programming client)
+(require 'ee-eca)
+
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
 
