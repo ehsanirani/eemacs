@@ -23,6 +23,9 @@
 (straight-use-package 'use-package)
 (require 'use-package)
 
+;; Silence native-compiler warnings from third-party packages
+(setq native-comp-async-report-warnings-errors 'silent)
+
 ;; Basic settings
 (setq inhibit-startup-message t
       ring-bell-function 'ignore
