@@ -37,10 +37,12 @@
          (buffer-string))))))
 
 (defun ee-ai--get-key (custom-var env-var secret-file)
-  "Resolve an API key from CUSTOM-VAR, ENV-VAR, or SECRET-FILE (first non-nil wins)."
-  (or custom-var
-      (getenv env-var)
-      (ee-ai--read-secret secret-file)))
+  "Resolve an API key from CUSTOM-VAR, ENV-VAR, or SECRET-FILE (first non-empty wins).
+Skips empty strings so exec-path-from-shell blanks don't shadow the file fallback."
+  (let ((env-val (getenv env-var)))
+    (or (and custom-var (not (string-empty-p custom-var)) custom-var)
+        (and env-val (not (string-empty-p env-val)) env-val)
+        (ee-ai--read-secret secret-file))))
 
 ;; GPT integration with Emacs
 (use-package gptel
