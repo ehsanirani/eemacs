@@ -52,9 +52,10 @@ Creates TODO.org and notes/ in DIR if they don't exist."
           (make-directory notes-dir t)))
       ;; Update agenda files
       (ee-org--update-agenda-files)
-      ;; Update org-roam dirs
-      (when (bound-and-true-p org-roam-directory)
-        (ee-org--update-roam-extra-dirs))
+      ;; Sync org-roam db so new notes/ files are indexed
+      (when (and (bound-and-true-p org-roam-directory)
+                 (fboundp 'org-roam-db-sync))
+        (org-roam-db-sync))
       (message "Registered project: %s" dir))))
 
 (defun ee-org-unregister-project (dir)
@@ -65,8 +66,10 @@ Creates TODO.org and notes/ in DIR if they don't exist."
     (setq ee-org-project-directories (delete dir ee-org-project-directories))
     (ee-org--save-projects)
     (ee-org--update-agenda-files)
-    (when (bound-and-true-p org-roam-directory)
-      (ee-org--update-roam-extra-dirs))
+    ;; Sync org-roam db to remove stale entries
+    (when (and (bound-and-true-p org-roam-directory)
+               (fboundp 'org-roam-db-sync))
+      (org-roam-db-sync))
     (message "Unregistered project: %s" dir)))
 
 (defun ee-org-list-projects ()
@@ -109,10 +112,41 @@ Creates TODO.org and notes/ in DIR if they don't exist."
            ;; Project TODO.org files
            (ee-org--collect-project-todo-files)))))
 
-(defun ee-org--update-roam-extra-dirs ()
-  "Update `org-roam-extra-directories' to include project notes/ dirs."
-  (when (boundp 'org-roam-extra-directories)
-    (setq org-roam-extra-directories (ee-org--collect-project-notes-dirs))))
+(defun ee-org--file-in-project-notes-p (path)
+  "Return non-nil if PATH is inside a registered project's notes/ directory."
+  (when path
+    (let ((path (expand-file-name path)))
+      (cl-some (lambda (dir)
+                 (let ((notes-dir (expand-file-name "notes" dir)))
+                   (and (file-directory-p notes-dir)
+                        (org-roam-descendant-of-p path notes-dir))))
+               ee-org-project-directories))))
+
+(defun ee-org--roam-file-p-advice (orig-fn &optional file)
+  "Advice for `org-roam-file-p' to also accept project notes/ files.
+Falls through to ORIG-FN for files under `org-roam-directory'."
+  (or (funcall orig-fn file)
+      (when-let* ((path (or file (buffer-file-name (buffer-base-buffer)))))
+        (and (member (org-roam--file-name-extension path)
+                     org-roam-file-extensions)
+             (ee-org--file-in-project-notes-p path)))))
+
+(defun ee-org--roam-list-files-advice (orig-fn)
+  "Advice for `org-roam-list-files' to include project notes/ files.
+Appends files from registered project notes/ directories to ORIG-FN result."
+  (let ((files (funcall orig-fn)))
+    (dolist (dir (ee-org--collect-project-notes-dirs))
+      (setq files (append files (org-roam--list-files dir))))
+    (delete-dups files)))
+
+(defun ee-org--setup-roam-project-advice ()
+  "Advise org-roam to also index project notes/ directories.
+Org-roam v2 only indexes files under `org-roam-directory'.  We extend it
+by advising `org-roam-file-p' and `org-roam-list-files' to also accept
+files from registered project notes/ directories."
+  (when (fboundp 'org-roam-file-p)
+    (advice-add 'org-roam-file-p :around #'ee-org--roam-file-p-advice)
+    (advice-add 'org-roam-list-files :around #'ee-org--roam-list-files-advice)))
 
 (defun ee-org--current-project-dir ()
   "Return the current project root, or nil."
@@ -472,8 +506,8 @@ Creates TODO.org and notes/ in DIR if they don't exist."
         (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (unless (file-exists-p org-roam-directory)
     (make-directory org-roam-directory t))
-  ;; Index project notes/ directories alongside central roam/
-  (ee-org--update-roam-extra-dirs)
+  ;; Advise org-roam to also index project notes/ directories
+  (ee-org--setup-roam-project-advice)
   (org-roam-db-autosync-mode))
 
 ;; Interactive graph visualization
