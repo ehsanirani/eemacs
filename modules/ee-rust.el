@@ -9,16 +9,22 @@
 (add-hook 'rust-mode-hook #'eglot-ensure)
 (add-hook 'rust-ts-mode-hook #'eglot-ensure)
 
+;; Disable rust-ts-flymake (runs bare rustc, doesn't understand Cargo deps).
+;; Eglot's flymake backend (from rust-analyzer) handles diagnostics properly.
+(with-eval-after-load 'rust-ts-mode
+  (remove-hook 'rust-ts-mode-hook #'rust-ts-flymake-setup))
+
 ;; Rust major mode
 (use-package rust-mode
   :straight t
   :mode "\\.rs\\'"
   :config
-  (setq rust-format-on-save t))
+  ;; Disable rust-mode's own format-on-save; eglot handles formatting
+  (setq rust-format-on-save nil))
 
 ;; Cargo integration
 (use-package cargo
   :straight t
-  :hook (rust-mode . cargo-minor-mode))
+  :hook ((rust-mode rust-ts-mode) . cargo-minor-mode))
 
 (provide 'ee-rust)

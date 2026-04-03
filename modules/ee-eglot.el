@@ -22,7 +22,6 @@
   (add-hook 'before-save-hook #'my-eglot-format-on-save)
 
   (setq eglot-events-buffer-size 0)
-  (add-to-list 'eglot-stay-out-of 'flymake)
 
   (defun my-add-eglot-server (mode server-command)
     "Add SERVER-COMMAND for MODE if the server is available."

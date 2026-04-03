@@ -10,6 +10,7 @@
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript")
           (bash "https://github.com/tree-sitter/tree-sitter-bash")
           (json "https://github.com/tree-sitter/tree-sitter-json")
+          (rust "https://github.com/tree-sitter/tree-sitter-rust")
           (yaml "https://github.com/tree-sitter/tree-sitter-yaml")
           (typst "https://github.com/uben0/tree-sitter-typst")))
 
