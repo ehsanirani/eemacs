@@ -1,8 +1,10 @@
 ;;; ee-terminals.el --- Terminal configuration for eemacs -*- lexical-binding: t; -*-
 
 ;; Vterm terminal emulator
+;; On NixOS, vterm (with its native module) is provided by the Nix Emacs
+;; package, so we skip straight.el to avoid recompiling from source.
 (use-package vterm
-  :straight t
+  :straight (not (file-exists-p "/etc/NIXOS"))
   :custom
   (vterm-max-scrollback 10000)
   (vterm-kill-buffer-on-exit t)
