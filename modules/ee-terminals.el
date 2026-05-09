@@ -3,13 +3,23 @@
 ;; Vterm terminal emulator
 ;; On NixOS, vterm (with its native module) is provided by the Nix Emacs
 ;; package, so we skip straight.el to avoid recompiling from source.
-(use-package vterm
-  :straight #.(not (file-exists-p "/etc/NIXOS"))
-  :custom
-  (vterm-max-scrollback 10000)
-  (vterm-kill-buffer-on-exit t)
-  :config
-  (setq vterm-shell (getenv "SHELL")))
+;; :straight's value is not evaluated at runtime, so we branch the
+;; whole form rather than passing a conditional expression.
+(if (file-exists-p "/etc/NIXOS")
+    (use-package vterm
+      :straight nil
+      :custom
+      (vterm-max-scrollback 10000)
+      (vterm-kill-buffer-on-exit t)
+      :config
+      (setq vterm-shell (getenv "SHELL")))
+  (use-package vterm
+    :straight t
+    :custom
+    (vterm-max-scrollback 10000)
+    (vterm-kill-buffer-on-exit t)
+    :config
+    (setq vterm-shell (getenv "SHELL"))))
 
 ;; Vterm toggle - VS Code style bottom terminal
 (use-package vterm-toggle
