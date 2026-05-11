@@ -34,21 +34,27 @@
 
   (dolist (entry '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US") nil utf-8)
                    ("de_DE" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "de_DE") nil utf-8)
-                   ("fa_IR" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "fa_IR") nil utf-8)
+                   ("fa_IR" "[[:alpha:]؀-ۿ‌]" "[^[:alpha:]؀-ۿ‌]" "[']" t ("-d" "fa_IR") nil utf-8)
                    ("multi" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US,de_DE,fa_IR") nil utf-8)))
-    (add-to-list 'ispell-local-dictionary-alist entry))
+    (add-to-list 'ispell-local-dictionary-alist entry)))
 
-  (defun ee/ispell-switch-language (arg)
-    "Switch the active ispell dictionary.
+;; Defined unconditionally so the symbol always exists; errors clearly if hunspell is absent.
+(defun ee/ispell-switch-language (arg)
+  "Switch the active ispell dictionary.
 Without a prefix argument, switch globally (all buffers).
 With a prefix argument (\\[universal-argument]), switch only the current buffer."
-    (interactive "P")
-    (let ((lang (completing-read "Ispell language: "
-                                 '("en_US" "de_DE" "fa_IR" "multi")
-                                 nil t)))
-      (ispell-change-dictionary lang (not arg))))
+  (interactive "P")
+  (unless (executable-find "hunspell")
+    (user-error "hunspell not found; install it and its dictionaries first"))
+  (let ((lang (completing-read "Ispell language: "
+                               (mapcar #'car
+                                       (seq-filter (lambda (e)
+                                                     (member (car e) '("en_US" "de_DE" "fa_IR" "multi")))
+                                                   ispell-local-dictionary-alist))
+                               nil t)))
+    (ispell-change-dictionary lang (not arg))))
 
-  (global-set-key (kbd "C-c S") #'ee/ispell-switch-language))
+(global-set-key (kbd "C-c S") #'ee/ispell-switch-language)
 
 (provide 'ee-spelling)
 ;;; ee-spelling.el ends here
