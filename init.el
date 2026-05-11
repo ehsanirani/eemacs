@@ -20,6 +20,7 @@
 (require 'ee-fonts)
 (require 'ee-evil)
 (require 'ee-editor)
+(require 'ee-spelling)
 
 ;; Programming
 (require 'ee-prog)
