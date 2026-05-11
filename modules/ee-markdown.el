@@ -73,8 +73,6 @@
                            (visual-line-mode 1)
                            ;; Auto-fill mode for comfortable writing (disabled by default to avoid unwanted changes)
                            ;; (auto-fill-mode 1)  ; Uncomment if you want auto-fill
-                           ;; Flyspell for spell checking
-                           (flyspell-mode 1)
                            ;; Highlight current line for better focus
                            (hl-line-mode 1)
                            ;; Rainbow delimiters for better code readability in code blocks
