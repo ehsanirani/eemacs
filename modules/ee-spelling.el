@@ -18,5 +18,37 @@
   ([remap ispell-word] . jinx-correct)
   ("C-M-$"            . jinx-languages))
 
+;; --- Hunspell / ispell backend ---
+;; On NixOS, add to your system configuration:
+;;   environment.systemPackages = with pkgs; [
+;;     hunspell
+;;     hunspellDicts.en_US
+;;     hunspellDicts.de_DE
+;;     hunspellDicts.fa_IR
+;;   ];
+;; On other systems, install hunspell and dictionaries via your package manager
+;; (e.g. apt install hunspell hunspell-en-us hunspell-de-de hunspell-fa).
+(when (executable-find "hunspell")
+  (setq ispell-program-name "hunspell"
+        ispell-dictionary    "en_US")
+
+  (dolist (entry '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US") nil utf-8)
+                   ("de_DE" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "de_DE") nil utf-8)
+                   ("fa_IR" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "fa_IR") nil utf-8)
+                   ("multi" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US,de_DE,fa_IR") nil utf-8)))
+    (add-to-list 'ispell-local-dictionary-alist entry))
+
+  (defun ee/ispell-switch-language (arg)
+    "Switch the active ispell dictionary.
+Without a prefix argument, switch globally (all buffers).
+With a prefix argument (\\[universal-argument]), switch only the current buffer."
+    (interactive "P")
+    (let ((lang (completing-read "Ispell language: "
+                                 '("en_US" "de_DE" "fa_IR" "multi")
+                                 nil t)))
+      (ispell-change-dictionary lang (not arg))))
+
+  (global-set-key (kbd "C-c S") #'ee/ispell-switch-language))
+
 (provide 'ee-spelling)
 ;;; ee-spelling.el ends here
