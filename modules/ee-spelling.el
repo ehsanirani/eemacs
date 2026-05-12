@@ -34,8 +34,8 @@
 
   (dolist (entry '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US") nil utf-8)
                    ("de_DE" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "de_DE") nil utf-8)
-                   ("fa_IR" "[[:alpha:]؀-ۿ‌]" "[^[:alpha:]؀-ۿ‌]" "[']" t ("-d" "fa_IR") nil utf-8)
-                   ("multi" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US,de_DE,fa_IR") nil utf-8)))
+                   ("fa_IR" "[[:alpha:]؀-ۿ‌]" "[^[:alpha:]؀-ۿ‌]" "[']" t ("-d" "fa-IR") nil utf-8)
+                   ("multi" "[[:alpha:]]" "[^[:alpha:]]" "[']" t ("-d" "en_US,de_DE,fa-IR") nil utf-8)))
     (add-to-list 'ispell-local-dictionary-alist entry)))
 
 ;; Defined unconditionally so the symbol always exists; errors clearly if hunspell is absent.
