@@ -29,6 +29,7 @@
 ;; On other systems, install hunspell and dictionaries via your package manager
 ;; (e.g. apt install hunspell hunspell-en-us hunspell-de-de hunspell-fa).
 (when (executable-find "hunspell")
+  (require 'ispell)
   (setq ispell-program-name "hunspell"
         ispell-dictionary    "en_US")
 
