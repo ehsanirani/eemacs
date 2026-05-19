@@ -27,11 +27,28 @@
 
   ;; Clean, minimal styling - NO BACKGROUNDS! Theme-aware colors
   (custom-set-faces
+   ;; Headers - scaled, asymmetric. `:height' is a multiplier so it tracks
+   ;; the base font size. H1/H2 get an overline to act as a thin rule.
+   '(markdown-header-face   ((t (:inherit default :weight bold))))
+   '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.3))))
+   '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.2))))
+   '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.1))))
+   '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.05))))
+   '(markdown-header-face-5 ((t (:inherit markdown-header-face :height 1.0))))
+   '(markdown-header-face-6 ((t (:inherit markdown-header-face :height 1.0 :slant italic))))
    ;; Code blocks - lighter colors for dark themes
    '(markdown-code-face ((t (:inherit fixed-pitch :foreground "#d4d4d4"))))
    '(markdown-pre-face ((t (:inherit fixed-pitch :foreground "#d4d4d4"))))
    ;; Inline code - brighter accent color for visibility
-   '(markdown-inline-code-face ((t (:inherit fixed-pitch :foreground "#ffa657" :weight semi-bold)))))
+   '(markdown-inline-code-face ((t (:inherit fixed-pitch :foreground "#ffa657" :weight semi-bold))))
+   ;; List bullets - tinted so markers stand apart from text
+   '(markdown-list-face ((t (:foreground "#7ee787" :weight bold))))
+   ;; Blockquote - muted italic
+   '(markdown-blockquote-face ((t (:slant italic :foreground "#8b949e"))))
+   ;; Horizontal rule rendered as a thin strike-through line over the `---`
+   '(markdown-hr-face ((t (:strike-through "#30363d" :foreground "#30363d"))))
+   ;; Links - subtle accent + underline
+   '(markdown-link-face ((t (:underline t :foreground "#58a6ff")))))
 
   ;; Apply additional styling after markdown-mode loads - NO BORDERS!
   (with-eval-after-load 'markdown-mode
