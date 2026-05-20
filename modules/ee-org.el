@@ -216,21 +216,16 @@ files from registered project notes/ directories."
   (org-log-done 'time)
   (org-log-into-drawer t)
 
-  ;; TODO keywords — MinEmacs rich GTD taxonomy (3 sequences)
+  ;; TODO keywords — trimmed GTD set (single sequence)
   (org-todo-keywords
    '((sequence
-      "TODO(t)"  ; A task that needs to be done
-      "PROJ(p)"  ; A project, which usually contains other tasks
-      "LOOP(r)"  ; A recurring task
-      "STRT(s)"  ; A task that is in progress
-      "WAIT(w)"  ; Something external is holding up this task
-      "HOLD(h)"  ; This task is paused/on hold because of me
-      "IDEA(i)"  ; An unconfirmed and unapproved task or notion
+      "TODO(t)"  ; needs doing
+      "STRT(s)"  ; in progress
+      "WAIT(w)"  ; blocked on someone or something external
       "|"
-      "DONE(d)"  ; Task successfully completed
-      "KILL(k)") ; Task was cancelled, aborted or is no longer applicable
-     (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
-     (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+      "DONE(d)"  ; completed
+      "KILL(k)"))) ; cancelled / no longer relevant
+
 
   (org-todo-keyword-faces
    '(("[-]"  . +org-todo-active)
