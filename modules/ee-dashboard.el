@@ -89,7 +89,7 @@
                      (bookmarks . 5)))
 
   ;; Org-agenda integration
-  (dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+  (dashboard-filter-agenda-entry 'dashboard-filter-agenda-by-todo)
   (dashboard-agenda-release-buffers t)
   (dashboard-agenda-sort-strategy '(time-up))
   (dashboard-agenda-prefix-format " %i %-12:c %s ")
