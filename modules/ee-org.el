@@ -320,15 +320,25 @@ files from registered project notes/ directories."
   :custom
   (org-agenda-tags-column 0)
   (org-agenda-span 'day)
-  (org-agenda-start-with-log-mode t)
-  (org-agenda-include-diary t)
+  (org-agenda-start-with-log-mode nil)
+  (org-agenda-include-diary nil)
   (org-agenda-use-time-grid t)
   (org-agenda-block-separator ?─)
   (org-agenda-current-time-string
    "⭠ now ─────────────────────────────────────────────────")
   (org-agenda-time-grid '((daily today require-timed)
                           (800 1000 1200 1400 1600 1800 2000)
-                          " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")))
+                          " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
+  (org-agenda-custom-commands
+   '(("d" "Today"
+      ((agenda "" ((org-agenda-span 'day)
+                   (org-agenda-overriding-header "Today")))
+       (todo "STRT"
+             ((org-agenda-overriding-header "In progress")))
+       (todo "WAIT"
+             ((org-agenda-overriding-header "Waiting on")))
+       (tags-todo "+CATEGORY=\"inbox\""
+                  ((org-agenda-overriding-header "Inbox to triage"))))))))
 
 ;;;; ============================================================
 ;;;; Export — MinEmacs academic pipeline
