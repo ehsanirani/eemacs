@@ -463,6 +463,9 @@ files from registered project notes/ directories."
   :custom
   (olivetti-body-width 80))
 
+(require 'face-remap)
+(declare-function olivetti-mode "olivetti")
+
 ;; Buffer-local storage for face remap cookies (used by ee-org-writing-mode)
 (defvar-local ee-org--writing-mode-remaps nil)
 
