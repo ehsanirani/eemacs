@@ -602,7 +602,8 @@ When disabled, restores the original flat org-modern appearance."
   (define-key org-mode-map (kbd "M-h") 'org-metaleft)
   (define-key org-mode-map (kbd "M-l") 'org-metaright)
   (define-key org-mode-map (kbd "M-j") 'org-metadown)
-  (define-key org-mode-map (kbd "M-k") 'org-metaup))
+  (define-key org-mode-map (kbd "M-k") 'org-metaup)
+  (define-key org-mode-map (kbd "C-c o w") #'ee-org-writing-mode))
 
 ;; Project management keybindings (global — work from any buffer)
 (define-prefix-command 'ee-org-project-map)
