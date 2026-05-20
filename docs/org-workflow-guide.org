@@ -180,10 +180,10 @@ C-c P r  ~/projects/new-research RET
 C-x C-f ~/projects/new-research/TODO.org RET
 
 ;; 3. Set up your project structure
-,* PROJ New Research Project :research:
+,* New Research Project :research:
 ,** TODO Literature review
 ,** TODO Set up experiment framework
-,** IDEA Could we use method X?
+,** TODO Investigate method X
 
 ;; 4. Create a roam note in the project
 ;;    (from any file in the project)
@@ -478,7 +478,7 @@ Project =notes/= directories are indexed by org-roam automatically once the proj
 | *While researching* | Create/link roam notes            | =C-c n f=, =C-c n i=        |
 | *End of day*        | Journal entry                     | =C-c x j=                   |
 | *Weekly*            | Process inbox, refile to projects | =inbox.org=, =C-c C-w=      |
-| *Weekly*            | Review all projects               | =C-c a m= -> =+PROJ=        |
+| *Weekly*            | Review all projects               | open =projects.org=         |
 | *New project*       | Register it                       | =C-c P r=                   |
 
 * Quick Reference --- All Commands
