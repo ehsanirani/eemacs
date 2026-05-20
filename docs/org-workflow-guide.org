@@ -47,6 +47,54 @@ Some projects keep a single =notes.org= inside =notes/=.  This works just as wel
 
 The agenda aggregates TODOs from both layers. Org-roam indexes notes from both layers into one unified knowledge graph.
 
+* First-Time Setup
+
+The central hub directory is not auto-created.  Before your first capture,
+make sure =~/org/= exists with the two subdirectories that are referenced
+as directories (not files):
+
+#+begin_src sh
+mkdir -p ~/org/archive ~/org/roam
+#+end_src
+
+The central files (=inbox.org=, =agenda.org=, =projects.org=,
+=journal.org=, =reading.org=) are created automatically by =org-capture=
+the first time their template fires --- you do not need to pre-create
+them.  =org-roam/= is also auto-created by org-roam itself on load, but
+creating it up front avoids a one-time startup warning.
+
+** The Central Project List (=projects.org=)
+
+=projects.org= is a first-class agenda file --- it is loaded into
+=org-agenda-files= automatically (when it exists) and indexed for refile
+and search.  Treat it as your master index, written freely:
+
+#+begin_example
+,#+title: Projects Master List
+,#+filetags: :index:
+
+,* Active
+
+,** PROJ DSP signal-processing library                              :research:
+   - Code:  [[file:~/projects/my-dsp-project/]]
+   - Tasks: [[file:~/projects/my-dsp-project/TODO.org]]
+   - Notes: [[file:~/projects/my-dsp-project/notes/]]
+
+   Free-form status, decisions, and links to roam nodes go here.
+
+,** PROJ TCell research                                             :research:
+   - Tasks: [[file:~/projects/TCell-research/TODO.org]]
+   - Notes: [[file:~/projects/TCell-research/notes/notes.org]]
+
+,* Backburner
+,* Done / archived
+#+end_example
+
+Using the =PROJ= keyword on each project heading lets =C-c a m +PROJ=
+surface every project at a glance during your weekly review.  Giving the
+file an =:ID:= (=M-x org-id-get-create=) also makes it a roam node, so
+=C-c n f= finds it and project notes can link back to it.
+
 * Capturing (The Entry Point for Everything)
 
 Press =C-c x= from anywhere in Emacs. Pick a template:
@@ -129,6 +177,11 @@ These file directly into the current project's =TODO.org=, so tasks stay with th
 | =p i= | Project idea | =<project>/TODO.org=   |
 
 The "current project" is detected automatically from the file you're editing (via =project.el=). If you're editing =~/projects/my-dsp-project/src/fft.c= and press =C-c x p t=, the TODO goes into =~/projects/my-dsp-project/TODO.org=.
+
+*Caveat:* if you invoke a =p= capture from a buffer that is not inside a
+project (e.g. =*scratch*=, =*Messages*=, dired), the project root falls
+back to =default-directory= and the TODO will be filed there.  Make sure
+you are visiting a file inside a project before using =C-c x p ...=.
 
 * Multi-Project Management
 
@@ -265,6 +318,21 @@ YES   ->  approved / accepted
 NO    ->  rejected / declined
 #+end_example
 
+** Tags
+
+A small canonical tag alist is preconfigured (selectable from =C-c C-q=):
+
+| Group         | Tags                                       |
+|---------------+--------------------------------------------|
+| Context       | =@home= (h), =@work= (w), =@lab= (L)       |
+| Kind          | =research= (r), =paper= (p), =experiment= (x) |
+| Topic         | =emacs= (e), =linux= (l), =programming= (P) |
+| Priority flag | =IMPORTANT= (!), =URGENT= (u)              |
+
+Free-form tags are allowed too --- anything you type as
+=:my-tag:other-tag:= is preserved and is searchable via =C-c a m=.  The
+canonical alist just gives you single-key selection in the tag prompt.
+
 ** Example Project Structure
 
 #+begin_example
@@ -323,9 +391,13 @@ Org-roam indexes notes from *both* your central =~/org/roam/= and every register
 | =C-c n i=  | Insert a link to another node while writing             |
 | =C-c n l=  | Toggle backlinks buffer                                 |
 | =C-c n c=  | Capture a new roam note                                 |
-| =C-c n j=  | Quick daily note                                        |
+| =C-c n j=  | Capture today's daily roam note                         |
 | =C-c n g=  | View the graph                                          |
 | =C-c n u=  | Interactive graph in browser (org-roam-ui)              |
+
+=C-c n j= uses =org-roam-dailies=; daily entries land in
+=~/org/roam/daily/YYYY-MM-DD.org= by default.  These are full roam nodes,
+so they participate in backlinks and graph view like any other node.
 
 ** Cross-Project Linking
 
@@ -382,7 +454,47 @@ Exports run in the background (async) so Emacs stays responsive.
 When tasks are completed and no longer relevant to the active agenda:
 
 - =C-c C-x C-a= --- archive the entry at point
-- Archived items move to =archive/= and are removed from the agenda but preserved for reference
+- Archived items move to an =archive/= directory *relative to the file
+  they came from*, into =<filename>_archive=, and are removed from the
+  active agenda but preserved for reference.
+
+Concretely, with =org-archive-location= set to =archive/%s_archive::=:
+
+| Source file                              | Archive destination                                |
+|------------------------------------------+----------------------------------------------------|
+| =~/org/inbox.org=                        | =~/org/archive/inbox.org_archive=                  |
+| =~/projects/my-dsp-project/TODO.org=     | =~/projects/my-dsp-project/archive/TODO.org_archive= |
+
+So each project carries its own =archive/= folder next to its
+=TODO.org=.  This keeps project history with the code rather than in a
+single global pile.
+
+** Backup and Sync
+
+=~/org/= grows quickly into a high-value, hard-to-replace dataset.  Pick
+*one* of these:
+
+- *Private git repo.*  Init =~/org/= as a repo on a private remote.
+  Recommended =.gitignore=:
+  #+begin_example
+  roam/.org-roam.db
+  roam/.org-roam.db-shm
+  roam/.org-roam.db-wal
+  *~
+  \#*\#
+  .#*
+  #+end_example
+  The roam database is a cache and rebuilds via =M-x org-roam-db-sync=.
+
+- *Syncthing / Dropbox / iCloud Drive.*  Live multi-device merge without
+  history.  Good if you edit from a phone or tablet.
+
+- *Both.*  Syncthing for live sync between machines, git for history and
+  off-site backup.  Run =git add -A && git commit -m "snapshot"= from a
+  cron/systemd timer if you want zero-friction history.
+
+For sensitive subtrees inside otherwise-public files, tag them =:crypt:=
+and configure =org-crypt= --- safer than encrypting the whole repo.
 
 ** Per-Project .dir-locals.el
 
@@ -400,7 +512,7 @@ Project =notes/= directories are indexed by org-roam automatically once the proj
 | *Morning*           | Open dashboard                    | =C-c d=                     |
 | *Morning*           | Check agenda (all projects)       | =C-c a a=                   |
 | *Throughout day*    | Capture anything                  | =C-c x= -> pick template    |
-| *Working on project* | Capture to that project           | =C-c x p t= / =p n= / =p i= |
+| *Working on project* | Capture to that project           | =C-c x p t= / =C-c x p n= / =C-c x p i= |
 | *Starting work*     | Start pomodoro                    | =C-c C-x m=                 |
 | *While researching* | Create/link roam notes            | =C-c n f=, =C-c n i=        |
 | *End of day*        | Journal entry                     | =C-c x j=                   |
