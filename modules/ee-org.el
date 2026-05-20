@@ -458,12 +458,7 @@ files from registered project notes/ directories."
   :straight t
   :hook (org-mode . mixed-pitch-mode)
   :config
-  (dolist (f '(org-date
-               org-formula
-               org-special-keyword
-               org-tag
-               line-number
-               line-number-current-line))
+  (dolist (f '(org-date org-special-keyword org-tag))
     (add-to-list 'mixed-pitch-fixed-pitch-faces f)))
 
 ;; LaTeX fragment auto-preview
