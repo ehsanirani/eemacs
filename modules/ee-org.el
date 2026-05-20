@@ -453,6 +453,26 @@ files from registered project notes/ directories."
   :init
   (global-org-modern-mode 1))
 
+;; Variable-pitch body text with monospace preserved for structured elements
+(use-package mixed-pitch
+  :straight t
+  :hook (org-mode . mixed-pitch-mode)
+  :custom
+  (mixed-pitch-fixed-pitch-faces
+   '(org-block
+     org-block-begin-line
+     org-block-end-line
+     org-code
+     org-date
+     org-formula
+     org-meta-line
+     org-special-keyword
+     org-table
+     org-tag
+     org-verbatim
+     line-number
+     line-number-current-line)))
+
 ;; LaTeX fragment auto-preview
 (use-package org-fragtog
   :straight t
