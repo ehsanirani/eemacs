@@ -59,7 +59,7 @@
     ("m" "Bookmarks"    ee-dashboard-goto-bookmarks)]
    ["Actions"
     ("c" "Capture"      org-capture)
-    ("A" "Open agenda"  org-agenda)
+    ("A" "Open agenda"  (lambda () (interactive) (org-agenda nil "d")))
     ("f" "Find file"    project-find-file)
     ("n" "Roam find"    org-roam-node-find)]
    ["Dashboard"
@@ -94,6 +94,7 @@
   (dashboard-agenda-sort-strategy '(time-up))
   (dashboard-agenda-prefix-format " %i %-12:c %s ")
   (dashboard-agenda-tags-format 'ignore)
+  (dashboard-week-agenda nil)
 
   ;; Project backend
   (dashboard-projects-backend 'project-el)
@@ -123,8 +124,8 @@
             "Capture" "Org capture (C-c x)"
             (lambda (&rest _) (org-capture)))
            (,(nerd-icons-codicon "nf-cod-calendar" :height 1.0 :v-adjust -0.1)
-            "Agenda" "Org agenda (C-c a)"
-            (lambda (&rest _) (org-agenda)))
+            "Agenda" "Today view (C-c a d)"
+            (lambda (&rest _) (org-agenda nil "d")))
            (,(nerd-icons-mdicon "nf-md-file_find" :height 1.0 :v-adjust -0.1)
             "Find file" "Project file"
             (lambda (&rest _) (project-find-file)))
