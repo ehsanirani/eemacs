@@ -13,7 +13,6 @@ Your org system spans two layers: a central =~/org/= hub and per-project org fil
 ├── inbox.org          <- everything lands here first (GTD inbox)
 ├── projects.org       <- master project list with links
 ├── journal.org        <- daily log (datetree)
-├── reading.org        <- book/paper notes (datetree)
 ├── archive/           <- completed/killed items go here
 └── roam/              <- org-roam knowledge graph (interlinked notes)
 #+end_example
@@ -56,9 +55,9 @@ as directories (not files):
 mkdir -p ~/org/archive ~/org/roam
 #+end_src
 
-The central files (=inbox.org=, =projects.org=, =journal.org=,
-=reading.org=) are created automatically by =org-capture= the first
-time their template fires --- you do not need to pre-create them.
+The central files (=inbox.org=, =projects.org=, =journal.org=) are
+created automatically by =org-capture= the first time their template
+fires --- you do not need to pre-create them.
 =org-roam/= is also auto-created by org-roam itself on load, but
 creating it up front avoids a one-time startup warning.
 
@@ -99,12 +98,12 @@ Press =C-c x= from anywhere in Emacs. Pick a template:
 
 *** =t= --- Todo
 
-Something you need to do. Goes to central inbox, clock starts automatically.
+Something you need to do. Goes to central inbox.  No auto-clock --- if
+you want to time the task, start the clock manually with =C-c C-x C-i=.
 
 #+begin_example
 ,* TODO Buy new oscilloscope
   [2026-02-27 Thu 14:30]
-  [[file:~/code/project/README.org]]
 #+end_example
 
 *** =j= --- Journal
