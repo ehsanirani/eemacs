@@ -258,34 +258,20 @@ files from registered project notes/ directories."
   ;; Agenda files — central + project TODO files
   (ee-org--update-agenda-files)
 
-  ;; Capture templates — central + project-aware
+  ;; Capture templates — central inbox + journal + project todo
   (setq org-capture-templates
-        `(("t" "Todo" entry (file ,(expand-file-name "inbox.org" org-directory))
-           "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-          ("n" "Note" entry (file ,(expand-file-name "inbox.org" org-directory))
-           "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-          ("j" "Journal" entry (file+olp+datetree
-                                ,(expand-file-name "journal.org" org-directory))
-           "* %^{Title} %?\n%U\n%a\n" :clock-in t :clock-resume t)
-          ("i" "Idea" entry (file+headline
-                             ,(expand-file-name "inbox.org" org-directory) "Ideas")
-           "* IDEA %?\n%U\n")
-          ("r" "Research note" entry (file ,(expand-file-name "inbox.org" org-directory))
-           "* %^{Title} :research:\n%U\nSource: %a\n\n%?" :clock-in t :clock-resume t)
-          ("b" "Book/Paper" entry (file+olp+datetree
-                                   ,(expand-file-name "reading.org" org-directory))
-           "* %^{Title} %^g\n%U\nAuthor: %^{Author}\n\n%?")
+        `(("t" "Todo" entry
+           (file ,(expand-file-name "inbox.org" org-directory))
+           "* TODO %?\n%U\n")
 
-          ;; Project-local captures
-          ;; NOTE: (file ee-org--current-project-todo) works because org-capture
-          ;; calls functionp symbols via funcall in org-capture-target-buffer.
-          ("p" "Project")
-          ("pt" "Project todo" entry (file ee-org--current-project-todo)
-           "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-          ("pn" "Project note" entry (file ee-org--current-project-todo)
-           "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-          ("pi" "Project idea" entry (file ee-org--current-project-todo)
-           "* IDEA %?\n%U\n")))
+          ("j" "Journal" entry
+           (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
+           "* %^{Title}\n%U\n\n%?"
+           :clock-in t :clock-resume t)
+
+          ("p" "Project Todo" entry
+           (file ee-org--current-project-todo)
+           "* TODO %?\n%U\n%a\n")))
 
   ;; Tags — research-oriented
   (setq org-tag-alist '((:startgroup . nil)
