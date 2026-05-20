@@ -428,13 +428,9 @@ files from registered project notes/ directories."
   (org-modern-block-fringe nil)
   (org-modern-checkbox nil)
   (org-modern-todo-faces
-   '(("IDEA" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "goldenrod"))
-     ("STRT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "OrangeRed"))
+   '(("STRT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "OrangeRed"))
      ("WAIT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "coral"))
      ("KILL" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "DarkGreen"))
-     ("PROJ" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "LimeGreen"))
-     ("HOLD" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "orange"))
-     ("LOOP" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "SteelBlue"))
      ("DONE" . (:inherit org-verbatim :weight semi-bold :foreground "black" :background "LightGray"))))
   :init
   (global-org-modern-mode 1))
