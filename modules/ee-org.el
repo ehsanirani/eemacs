@@ -228,13 +228,8 @@ files from registered project notes/ directories."
 
 
   (org-todo-keyword-faces
-   '(("[-]"  . +org-todo-active)
-     ("STRT" . +org-todo-active)
-     ("[?]"  . +org-todo-onhold)
+   '(("STRT" . +org-todo-active)
      ("WAIT" . +org-todo-onhold)
-     ("HOLD" . +org-todo-onhold)
-     ("PROJ" . +org-todo-project)
-     ("NO"   . +org-todo-cancel)
      ("KILL" . +org-todo-cancel)))
 
   ;; Priorities
