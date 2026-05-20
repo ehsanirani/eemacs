@@ -461,6 +461,13 @@ files from registered project notes/ directories."
   (dolist (f '(org-date org-special-keyword org-tag))
     (add-to-list 'mixed-pitch-fixed-pitch-faces f)))
 
+;; Centered writing layout — used by ee-org-writing-mode
+(use-package olivetti
+  :straight t
+  :defer t
+  :custom
+  (olivetti-body-width 80))
+
 ;; LaTeX fragment auto-preview
 (use-package org-fragtog
   :straight t
