@@ -463,6 +463,31 @@ files from registered project notes/ directories."
   :custom
   (olivetti-body-width 80))
 
+;; Buffer-local storage for face remap cookies (used by ee-org-writing-mode)
+(defvar-local ee-org--writing-mode-remaps nil)
+
+(define-minor-mode ee-org-writing-mode
+  "Toggle focused writing mode: centered layout + heading size/weight hierarchy.
+When enabled, activates olivetti centering and scales org headings by level.
+When disabled, restores the original flat org-modern appearance."
+  :lighter " Write"
+  (if ee-org-writing-mode
+      (progn
+        (olivetti-mode 1)
+        (setq ee-org--writing-mode-remaps
+              (list
+               (face-remap-add-relative 'org-level-1 :height 1.25 :weight 'bold)
+               (face-remap-add-relative 'org-level-2 :height 1.15 :weight 'semi-bold)
+               (face-remap-add-relative 'org-level-3 :height 1.10 :weight 'semi-bold)
+               (face-remap-add-relative 'org-level-4 :height 1.05 :weight 'normal)
+               (face-remap-add-relative 'org-level-5 :height 1.0  :weight 'normal)
+               (face-remap-add-relative 'org-level-6 :height 1.0  :weight 'normal)
+               (face-remap-add-relative 'org-level-7 :height 1.0  :weight 'normal)
+               (face-remap-add-relative 'org-level-8 :height 1.0  :weight 'normal))))
+    (olivetti-mode -1)
+    (mapc #'face-remap-remove-relative ee-org--writing-mode-remaps)
+    (setq ee-org--writing-mode-remaps nil)))
+
 ;; LaTeX fragment auto-preview
 (use-package org-fragtog
   :straight t
