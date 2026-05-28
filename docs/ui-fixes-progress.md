@@ -310,7 +310,21 @@ Iterated to a design that keeps pills but makes them theme-aware:
 
 ## Phase 4 — Wire up emoji and Arabic font fallbacks
 
-**Status:** [x] implemented (awaiting verification)
+**Status:** [x] verified (commits `8ace452` + follow-ups `7f4f12b`, `c0cbe82`)
+
+**Follow-ups after initial verification:**
+- `7f4f12b` — added an explicit `(require 'cl-lib)` because the helper
+  functions used `cl-return` to short-circuit the candidate `dolist`.
+  Later superseded by switching to `catch`/`throw`.
+- `c0cbe82` — three combined fixes:
+  - Detect installed fonts via `find-font (font-spec :family ...)` instead
+    of `(member ... (font-family-list))`. The previous check silently
+    no-op'd for emoji on Linux because color emoji fonts are often
+    resolvable yet absent from `font-family-list` at hook time.
+  - Replace `cl-return` with `catch`/`throw`; remove the cl-lib require.
+  - Reorder Arabic candidates (Vazirmatn first for the Persian-primary
+    user; add Noto Sans/Naskh Arabic). Expand emoji candidates (Twitter
+    Color Emoji, Twemoji, JoyPixels, Emoji One, Symbola).
 
 **Files:** `ee-fonts.el`
 
@@ -466,7 +480,7 @@ These came up in the three-agent review but are explicitly deferred:
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
 | 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
 | 3     | Theme-portable org tag and TODO faces                            | [x] verified (`adef603` + follow-up) |
-| 4     | Wire up emoji and Arabic font fallbacks                          | [x] implemented (awaiting verification) |
+| 4     | Wire up emoji and Arabic font fallbacks                          | [x] verified (`8ace452` + follow-ups) |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
 
 Update the `Status:` field at the top of each phase section and tick
