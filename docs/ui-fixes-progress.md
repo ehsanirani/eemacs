@@ -380,7 +380,7 @@ silently no-op (the `(member font (font-family-list))` guard).
 
 ## Phase 5 — Delete dead disabled code in `ee-ui.el`
 
-**Status:** [x] implemented (awaiting verification)
+**Status:** [x] verified (commit `b4ce198`)
 
 **Decision recorded:** Option **5b** (delete) — the cleaner choice. The
 `ee-highlight-*` family has been disabled by default since it was added,
@@ -481,7 +481,7 @@ These came up in the three-agent review but are explicitly deferred:
 | 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
 | 3     | Theme-portable org tag and TODO faces                            | [x] verified (`adef603` + follow-up) |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [x] verified (`8ace452` + follow-ups) |
-| 5     | Delete dead disabled code in `ee-ui.el`                          | [x] implemented (awaiting verification) |
+| 5     | Delete dead disabled code in `ee-ui.el`                          | [x] verified (`b4ce198`) |
 
 Update the `Status:` field at the top of each phase section and tick
 the table row after the corresponding commit lands.
