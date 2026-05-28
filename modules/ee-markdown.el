@@ -99,10 +99,7 @@
                            (hl-line-mode 1)
                            ;; Rainbow delimiters for better code readability in code blocks
                            (when (fboundp 'rainbow-delimiters-mode)
-                             (rainbow-delimiters-mode 1))
-                           ;; Optional: Add code block background highlighting
-                           ;; (ee-highlight-code-content-only)  ; Uncomment to enable by default
-                           ))
+                             (rainbow-delimiters-mode 1))))
   :config
   ;; Mermaid diagram support (Centaur-style) - conditional loading
   (when (executable-find "mmdc")
