@@ -262,6 +262,50 @@ they prefer pills, the file comment documents the one-line addition.
 
 **Rollback:** `git revert <commit>`.
 
+### Phase 3 follow-up — restore theme-aware pills and tune label size
+
+After testing `adef603`, the flat-text design read as a visual regression
+(the foreground-only specs didn't render as pills because they had no
+`:background`; tags also picked up org-modern's display-property
+padding spaces, producing a "ghost pill" with too-wide horizontal gap).
+Iterated to a design that keeps pills but makes them theme-aware:
+
+1. **Dropped** the `:custom-face` override for `org-modern-tag`. Tags
+   now fall through to org-modern's default `org-modern-tag` face
+   (`org-modern.el:313-317`) which inherits `secondary-selection` —
+   a theme-provided face that gives a subtle pill background that
+   tracks every theme.
+2. **Added** `:inverse-video t` to every `org-modern-todo-faces` entry.
+   Same trick the default `org-modern-todo` face uses
+   (`org-modern.el:333-337`): the inherited semantic foreground becomes
+   the pill background, the buffer background becomes the text inside.
+   So `STRT` → `font-lock-constant-face`-coloured pill, `WAIT` →
+   `warning`-coloured pill, etc. TODO not listed — it falls through to
+   `org-modern-todo` which already applies inverse-video on `org-todo`.
+3. **Added** a `:custom-face` override for `org-modern-label` setting
+   `:height 0.9`. Default `:height 0.8` made every label noticeably
+   smaller than surrounding text; 0.9 keeps labels distinct as badges
+   without the aggressive 20% shrink. `:width condensed` from the
+   default spec dropped — most coding fonts don't ship a condensed
+   variant, so it silently fell back to normal width anyway. The
+   `org-modern-label` defface docstring explicitly invites this
+   override.
+
+**Files:** `ee-org.el` only.
+
+**Commit title:** `org: theme-aware org-modern pills with tuned label size`
+
+**Verification (after testing on doom-material-dark):**
+
+- Tags render as a subtle `secondary-selection`-coloured pill.
+- TODO, STRT, WAIT, KILL, DONE render as saturated theme-aware pills
+  (`org-todo`, `font-lock-constant-face`, `warning`, `error`, `shadow`
+  respectively).
+- All labels at 0.9× of surrounding text — visibly badge-like but no
+  longer dwarfed.
+- Theme switch (`M-x load-theme RET modus-operandi RET`, etc.) recolors
+  every pill automatically; no hardcoded CSS colors anywhere.
+
 ---
 
 ## Phase 4 — Wire up emoji and Arabic font fallbacks
@@ -421,7 +465,7 @@ These came up in the three-agent review but are explicitly deferred:
 |-------|------------------------------------------------------------------|-------------------------|
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
 | 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
-| 3     | Theme-portable org tag and TODO faces                            | [x] implemented (awaiting verification) |
+| 3     | Theme-portable org tag and TODO faces                            | [x] verified (`adef603` + follow-up) |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
 

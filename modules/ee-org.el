@@ -421,25 +421,30 @@ files from registered project notes/ directories."
   :straight t
   :after org
   :custom-face
-  ;; Flat tag rendering — inherits theme colors. For a filled-pill
-  ;; look, add e.g. `:background ,(face-attribute 'mode-line :background)`
-  ;; inside an `enable-theme-functions' hook so it tracks theme changes.
-  (org-modern-tag ((t (:inherit (shadow org-verbatim)
-                       :weight regular :box nil))))
+  ;; org-modern's default `org-modern-label' uses :height 0.8 which
+  ;; makes every label (tag, TODO, STRT, etc.) noticeably smaller than
+  ;; the surrounding text. 0.9 keeps labels distinct as badges without
+  ;; the original aggressive 20% shrink. The package docstring on
+  ;; `org-modern-label' explicitly invites this override.
+  (org-modern-label ((t (:height 0.9 :weight regular :underline nil))))
   :custom
   (org-modern-table-vertical 5)
   (org-modern-table-horizontal 2)
   (org-modern-block-fringe nil)
   (org-modern-checkbox nil)
-  ;; Flat TODO rendering — colors come from the active theme via
-  ;; inherited semantic faces. To restore filled badges, give each
-  ;; entry a `:background' derived from a theme face inside an
-  ;; `enable-theme-functions' hook (see commit message for example).
+  ;; Theme-aware pills for TODO state keywords. `:inverse-video t' is
+  ;; the same trick the default `org-modern-todo' face uses: it swaps
+  ;; the inherited foreground into the pill background, so the pill
+  ;; colour is whatever the active theme provides for the semantic
+  ;; face (`font-lock-constant-face', `warning', etc.). TODO itself is
+  ;; not listed -- it falls through to `org-modern-todo' which already
+  ;; applies the same inverse-video treatment to the theme's `org-todo'
+  ;; face.
   (org-modern-todo-faces
-   '(("STRT" . (:inherit (bold font-lock-constant-face)))
-     ("WAIT" . (:inherit (bold warning)))
-     ("KILL" . (:inherit (bold error)))
-     ("DONE" . (:inherit (bold shadow)))))
+   '(("STRT" . (:inherit (bold font-lock-constant-face) :inverse-video t))
+     ("WAIT" . (:inherit (bold warning) :inverse-video t))
+     ("KILL" . (:inherit (bold error) :inverse-video t))
+     ("DONE" . (:inherit (bold shadow) :inverse-video t))))
   :init
   (global-org-modern-mode 1))
 
