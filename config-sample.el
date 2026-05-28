@@ -47,21 +47,27 @@
 ;; (setq ehsan/mono-font-family "IBM Plex Mono")
 
 ;; --- Proportional (variable-pitch) for prose -------------------------------
-;; Defaults to the same JetBrains Mono as `mono' so all buffers look uniform;
-;; uncomment an alternate (and bump the height -- proportional fonts often
-;; look smaller at the same point size) to give org/markdown a distinct face.
+;; `ehsan/prose-font-scale' is a *float multiplier* on top of the mono
+;; baseline -- 1.0 = same size as code, 1.15 = 15% larger, etc. Stored as a
+;; float `:height' on `variable-pitch', which Emacs interprets relative to
+;; the underlying face. mixed-pitch-mode then propagates that scale into
+;; org/markdown body text (this requires `mixed-pitch-set-height' to be
+;; non-nil, which `ee-org.el' sets).
 (setq ehsan/prose-font-family "JetBrainsMono Nerd Font"
-      ehsan/prose-font-height 105
+      ehsan/prose-font-scale  1.0
       ehsan/prose-font-weight 'normal)
 ;; Prose alternates -- uncomment one to swap:
-;; (setq ehsan/prose-font-family "Source Sans 3"  ehsan/prose-font-height 115 ehsan/prose-font-weight 'normal)
-;; (setq ehsan/prose-font-family "IBM Plex Serif" ehsan/prose-font-height 115 ehsan/prose-font-weight 'normal)
-;; (setq ehsan/prose-font-family "IBM Plex Sans"  ehsan/prose-font-height 115 ehsan/prose-font-weight 'normal)
+;; (setq ehsan/prose-font-family "Source Sans 3"  ehsan/prose-font-scale 1.15 ehsan/prose-font-weight 'normal)
+;; (setq ehsan/prose-font-family "IBM Plex Serif" ehsan/prose-font-scale 1.15 ehsan/prose-font-weight 'normal)
+;; (setq ehsan/prose-font-family "IBM Plex Sans"  ehsan/prose-font-scale 1.15 ehsan/prose-font-weight 'normal)
 
 (defun ehsan/apply-font-after-theme ()
   "Apply fonts from the `ehsan/mono-*' and `ehsan/prose-*' variables.
-Called on startup and after every theme change so themes can't clobber the
-face attributes."
+The mono height is absolute (sets the baseline). The prose face uses a
+float `:height', which Emacs treats as a scale factor relative to the
+underlying face -- so prose tracks the mono baseline automatically.
+Called on startup and after every theme change so themes can't clobber
+the face attributes."
   (when (display-graphic-p)
     (set-face-attribute 'default nil
                         :family ehsan/mono-font-family
@@ -73,7 +79,7 @@ face attributes."
                         :weight ehsan/mono-font-weight)
     (set-face-attribute 'variable-pitch nil
                         :family ehsan/prose-font-family
-                        :height ehsan/prose-font-height
+                        :height (float ehsan/prose-font-scale)
                         :weight ehsan/prose-font-weight)))
 
 (when (display-graphic-p)

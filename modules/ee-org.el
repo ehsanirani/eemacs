@@ -440,6 +440,10 @@ files from registered project notes/ directories."
   :straight t
   :hook (org-mode . mixed-pitch-mode)
   :config
+  ;; Propagate `:height' from `variable-pitch' into the buffer remap.
+  ;; Without this, mixed-pitch only applies `:family' and `:weight', so
+  ;; prose font *size* changes in `variable-pitch' have no effect.
+  (setq mixed-pitch-set-height t)
   (dolist (f '(org-date org-special-keyword org-tag))
     (add-to-list 'mixed-pitch-fixed-pitch-faces f)))
 
