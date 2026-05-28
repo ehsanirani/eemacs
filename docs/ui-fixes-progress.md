@@ -170,7 +170,7 @@ function definitions.
 
 ## Phase 3 — Theme-portable org tag and TODO faces
 
-**Status:** [ ] not started
+**Status:** [x] implemented (awaiting verification)
 
 **Files:** `ee-org.el`
 
@@ -421,7 +421,7 @@ These came up in the three-agent review but are explicitly deferred:
 |-------|------------------------------------------------------------------|-------------------------|
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
 | 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
-| 3     | Theme-portable org tag and TODO faces                            | [ ]                     |
+| 3     | Theme-portable org tag and TODO faces                            | [x] implemented (awaiting verification) |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
 

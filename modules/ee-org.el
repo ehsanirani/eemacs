@@ -421,17 +421,25 @@ files from registered project notes/ directories."
   :straight t
   :after org
   :custom-face
-  (org-modern-tag ((t (:inherit org-verbatim :weight regular :foreground "black" :background "LightGray" :box "black"))))
+  ;; Flat tag rendering — inherits theme colors. For a filled-pill
+  ;; look, add e.g. `:background ,(face-attribute 'mode-line :background)`
+  ;; inside an `enable-theme-functions' hook so it tracks theme changes.
+  (org-modern-tag ((t (:inherit (shadow org-verbatim)
+                       :weight regular :box nil))))
   :custom
   (org-modern-table-vertical 5)
   (org-modern-table-horizontal 2)
   (org-modern-block-fringe nil)
   (org-modern-checkbox nil)
+  ;; Flat TODO rendering — colors come from the active theme via
+  ;; inherited semantic faces. To restore filled badges, give each
+  ;; entry a `:background' derived from a theme face inside an
+  ;; `enable-theme-functions' hook (see commit message for example).
   (org-modern-todo-faces
-   '(("STRT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "OrangeRed"))
-     ("WAIT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "coral"))
-     ("KILL" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "DarkGreen"))
-     ("DONE" . (:inherit org-verbatim :weight semi-bold :foreground "black" :background "LightGray"))))
+   '(("STRT" . (:inherit (bold font-lock-constant-face)))
+     ("WAIT" . (:inherit (bold warning)))
+     ("KILL" . (:inherit (bold error)))
+     ("DONE" . (:inherit (bold shadow)))))
   :init
   (global-org-modern-mode 1))
 
