@@ -103,7 +103,7 @@ switches themes.
 
 ## Phase 2 — Drop `:overline` from the subtle mode-line, remove duplicate
 
-**Status:** [ ] not started
+**Status:** [x] implemented (awaiting verification)
 
 **Files:** `ee-modeline.el`, `ee-fonts.el`
 
@@ -408,7 +408,7 @@ These came up in the three-agent review but are explicitly deferred:
 | Phase | Title                                                            | Status                  |
 |-------|------------------------------------------------------------------|-------------------------|
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
-| 2     | Drop overline from subtle mode-line, remove duplicate            | [ ]                     |
+| 2     | Drop overline from subtle mode-line, remove duplicate            | [x] implemented (awaiting verification) |
 | 3     | Theme-portable org tag and TODO faces                            | [ ]                     |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |

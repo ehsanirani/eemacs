@@ -314,13 +314,11 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
     (set-face-attribute
      'mode-line-active nil
      :box `(:line-width 4 :color ,(face-attribute 'default :background nil t) :style nil)
-     :overline (face-attribute 'default :foreground nil t)
      :background (face-attribute 'default :background nil t))
 
     (set-face-attribute
      'mode-line-inactive nil
-     :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background nil t) :style nil)
-     :overline (face-attribute 'mode-line-inactive :foreground nil t))))
+     :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background nil t) :style nil))))
 
 ;;; Mode
 

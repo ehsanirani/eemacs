@@ -70,23 +70,6 @@ FiraCode does NOT have italics - use JetBrains Mono, Cascadia Code, or Victor Mo
       (set-face-attribute 'eglot-highlight-symbol-face nil :underline t))
     (message "Face tweaks applied (italic keywords, semi-bold types)")))
 
-;;; Subtle mode-line (MinEmacs style)
-
-(defun ee-subtle-mode-line (&rest _args)
-  "Apply subtle look for the mode-line (MinEmacs style)."
-  (interactive)
-  (when (display-graphic-p)
-    (set-face-attribute
-     'mode-line-active nil
-     :box `(:line-width 4 :color ,(face-attribute 'default :background nil t) :style nil)
-     :overline (face-attribute 'default :foreground nil t)
-     :background (face-attribute 'default :background nil t))
-    (set-face-attribute
-     'mode-line-inactive nil
-     :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background nil t) :style nil)
-     :overline (face-attribute 'mode-line-inactive :foreground nil t))
-    (message "Subtle mode-line applied")))
-
 ;;; Multi-language font support
 
 (defun ee-setup-emoji-font ()
@@ -113,8 +96,6 @@ FiraCode does NOT have italics - use JetBrains Mono, Cascadia Code, or Victor Mo
 
 (add-hook 'enable-theme-functions #'ee-tweak-faces)
 (add-hook 'emacs-startup-hook #'ee-tweak-faces)
-(add-hook 'emacs-startup-hook #'ee-subtle-mode-line)
-(add-hook 'enable-theme-functions #'ee-subtle-mode-line)
 
 ;;; Keybindings
 
