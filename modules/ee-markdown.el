@@ -77,6 +77,9 @@
   ;; Apply language highlighting
   (add-hook 'markdown-mode-hook 'ee-markdown-highlight-languages)
 
+  ;; Proportional prose / monospace code (matches ee-org behaviour)
+  (add-hook 'markdown-mode-hook #'mixed-pitch-mode)
+
   ;; Ensure proper fontification
   (add-hook 'markdown-mode-hook
             (lambda ()
