@@ -61,13 +61,15 @@
 ;; (setq ehsan/prose-font-family "IBM Plex Serif" ehsan/prose-font-scale 1.15 ehsan/prose-font-weight 'normal)
 ;; (setq ehsan/prose-font-family "IBM Plex Sans"  ehsan/prose-font-scale 1.15 ehsan/prose-font-weight 'normal)
 
-(defun ehsan/apply-font-after-theme ()
+(defun ehsan/apply-font-after-theme (&rest _args)
   "Apply fonts from the `ehsan/mono-*' and `ehsan/prose-*' variables.
 The mono height is absolute (sets the baseline). The prose face uses a
 float `:height', which Emacs treats as a scale factor relative to the
 underlying face -- so prose tracks the mono baseline automatically.
 Called on startup and after every theme change so themes can't clobber
-the face attributes."
+the face attributes.
+The `&rest _args' parameter exists to absorb the theme symbol that
+`enable-theme-functions' passes to its hook functions; we ignore it."
   (when (display-graphic-p)
     (set-face-attribute 'default nil
                         :family ehsan/mono-font-family
@@ -95,9 +97,6 @@ the face attributes."
                                 (interactive)
                                 (message "Toggle theme placeholder")))
 
-(add-hook 'after-load-theme-hook #'ehsan/apply-font-after-theme)
-
-;; Also apply font after init
-(add-hook 'after-init-hook #'ehsan/apply-font-after-theme)
+(add-hook 'enable-theme-functions #'ehsan/apply-font-after-theme)
 
 (provide 'config)

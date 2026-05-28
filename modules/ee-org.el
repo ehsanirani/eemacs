@@ -421,17 +421,30 @@ files from registered project notes/ directories."
   :straight t
   :after org
   :custom-face
-  (org-modern-tag ((t (:inherit org-verbatim :weight regular :foreground "black" :background "LightGray" :box "black"))))
+  ;; org-modern's default `org-modern-label' uses :height 0.8 which
+  ;; makes every label (tag, TODO, STRT, etc.) noticeably smaller than
+  ;; the surrounding text. 0.9 keeps labels distinct as badges without
+  ;; the original aggressive 20% shrink. The package docstring on
+  ;; `org-modern-label' explicitly invites this override.
+  (org-modern-label ((t (:height 0.9 :weight regular :underline nil))))
   :custom
   (org-modern-table-vertical 5)
   (org-modern-table-horizontal 2)
   (org-modern-block-fringe nil)
   (org-modern-checkbox nil)
+  ;; Theme-aware pills for TODO state keywords. `:inverse-video t' is
+  ;; the same trick the default `org-modern-todo' face uses: it swaps
+  ;; the inherited foreground into the pill background, so the pill
+  ;; colour is whatever the active theme provides for the semantic
+  ;; face (`font-lock-constant-face', `warning', etc.). TODO itself is
+  ;; not listed -- it falls through to `org-modern-todo' which already
+  ;; applies the same inverse-video treatment to the theme's `org-todo'
+  ;; face.
   (org-modern-todo-faces
-   '(("STRT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "OrangeRed"))
-     ("WAIT" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "coral"))
-     ("KILL" . (:inherit org-verbatim :weight semi-bold :foreground "white" :background "DarkGreen"))
-     ("DONE" . (:inherit org-verbatim :weight semi-bold :foreground "black" :background "LightGray"))))
+   '(("STRT" . (:inherit (bold font-lock-constant-face) :inverse-video t))
+     ("WAIT" . (:inherit (bold warning) :inverse-video t))
+     ("KILL" . (:inherit (bold error) :inverse-video t))
+     ("DONE" . (:inherit (bold shadow) :inverse-video t))))
   :init
   (global-org-modern-mode 1))
 

@@ -309,18 +309,21 @@ TYPE is usually keyword `:error', `:warning' or `:note'."
 ;;; Subtle mode-line styling
 
 (defun +subtle-mode-line (&rest _args)
-  "Subtle look for the mode-line."
+  "Subtle look for the mode-line.
+The mode-line background is merged with the buffer background; a 1px
+overline drawn in the `mode-line' face foreground colour provides a
+clearly visible separator that tracks the active theme."
   (when (display-graphic-p)
     (set-face-attribute
      'mode-line-active nil
      :box `(:line-width 4 :color ,(face-attribute 'default :background nil t) :style nil)
-     :overline (face-attribute 'default :foreground nil t)
+     :overline (face-attribute 'mode-line :foreground nil t)
      :background (face-attribute 'default :background nil t))
 
     (set-face-attribute
      'mode-line-inactive nil
      :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background nil t) :style nil)
-     :overline (face-attribute 'mode-line-inactive :foreground nil t))))
+     :overline (face-attribute 'mode-line :foreground nil t))))
 
 ;;; Mode
 

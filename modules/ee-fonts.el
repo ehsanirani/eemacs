@@ -70,51 +70,59 @@ FiraCode does NOT have italics - use JetBrains Mono, Cascadia Code, or Victor Mo
       (set-face-attribute 'eglot-highlight-symbol-face nil :underline t))
     (message "Face tweaks applied (italic keywords, semi-bold types)")))
 
-;;; Subtle mode-line (MinEmacs style)
-
-(defun ee-subtle-mode-line (&rest _args)
-  "Apply subtle look for the mode-line (MinEmacs style)."
-  (interactive)
-  (when (display-graphic-p)
-    (set-face-attribute
-     'mode-line-active nil
-     :box `(:line-width 4 :color ,(face-attribute 'default :background nil t) :style nil)
-     :overline (face-attribute 'default :foreground nil t)
-     :background (face-attribute 'default :background nil t))
-    (set-face-attribute
-     'mode-line-inactive nil
-     :box `(:line-width 4 :color ,(face-attribute 'mode-line-inactive :background nil t) :style nil)
-     :overline (face-attribute 'mode-line-inactive :foreground nil t))
-    (message "Subtle mode-line applied")))
-
 ;;; Multi-language font support
 
 (defun ee-setup-emoji-font ()
-  "Setup emoji font fallback."
+  "Setup emoji font fallback.
+Iterates candidates in order; first installed family wins. We use
+`find-font' (which asks the font backend to resolve a spec) rather
+than `(member \"...\" (font-family-list))' because color emoji fonts
+on Linux/fontconfig are often resolvable yet absent from
+`font-family-list' at startup-hook time. To override, install a
+higher-priority candidate or `setq' a custom call earlier."
   (interactive)
   (when (display-graphic-p)
-    (dolist (font '("Noto Color Emoji" "Apple Color Emoji" "Segoe UI Emoji"))
-      (when (member font (font-family-list))
-        (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend)
-        (message "Emoji font set to %s" font)
-        (cl-return)))))
+    (catch 'done
+      (dolist (font '("Noto Color Emoji"
+                      "Twitter Color Emoji"
+                      "Twemoji"
+                      "JoyPixels"
+                      "Emoji One"
+                      "Apple Color Emoji"
+                      "Segoe UI Emoji"
+                      "Symbola"))
+        (when (find-font (font-spec :family font))
+          (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend)
+          (message "Emoji font set to %s" font)
+          (throw 'done nil))))))
 
 (defun ee-setup-arabic-font ()
-  "Setup Arabic script font."
+  "Setup Arabic/Persian script font.
+Iterates candidates in order; first installed family wins. Vazirmatn
+leads because the primary user reads Persian — swap order or extend
+this list to taste."
   (interactive)
   (when (display-graphic-p)
-    (dolist (font '("Amiri" "Cascadia Code" "DejaVu Sans"))
-      (when (member font (font-family-list))
-        (set-fontset-font t 'arabic (font-spec :family font) nil)
-        (message "Arabic font set to %s" font)
-        (cl-return)))))
+    (catch 'done
+      (dolist (font '("Vazirmatn"
+                      "Amiri"
+                      "Noto Sans Arabic"
+                      "Noto Naskh Arabic"
+                      "Cascadia Code"
+                      "DejaVu Sans"))
+        (when (find-font (font-spec :family font))
+          (set-fontset-font t 'arabic (font-spec :family font) nil)
+          (message "Arabic font set to %s" font)
+          (throw 'done nil))))))
 
 ;;; Apply on startup and theme change
 
 (add-hook 'enable-theme-functions #'ee-tweak-faces)
 (add-hook 'emacs-startup-hook #'ee-tweak-faces)
-(add-hook 'emacs-startup-hook #'ee-subtle-mode-line)
-(add-hook 'enable-theme-functions #'ee-subtle-mode-line)
+(add-hook 'emacs-startup-hook #'ee-setup-emoji-font)
+(add-hook 'emacs-startup-hook #'ee-setup-arabic-font)
+(add-hook 'server-after-make-frame-hook #'ee-setup-emoji-font)
+(add-hook 'server-after-make-frame-hook #'ee-setup-arabic-font)
 
 ;;; Keybindings
 
