@@ -101,58 +101,70 @@ switches themes.
 
 ---
 
-## Phase 2 — Drop `:overline` from the subtle mode-line, remove duplicate
+## Phase 2 — Subtle mode-line: theme-aware overline, remove duplicate
 
-**Status:** [x] implemented (awaiting verification)
+**Status:** [x] verified (commits `0e742ce` + follow-up)
 
 **Files:** `ee-modeline.el`, `ee-fonts.el`
 
+**Design intent (revised after testing):** The mode-line `:background`
+is intentionally merged with the buffer background (the "floating" look).
+That merge leaves the mode-line indistinguishable from the buffer unless
+*something* separates them. The original overline used
+`(face-attribute 'default :foreground)` — the buffer text colour — which
+was too loud. After iterating through `vertical-border`, `shadow`, and
+`font-lock-comment-face` (all too quiet against the merged background),
+we settled on `(face-attribute 'mode-line :foreground)`: the modeline
+face's own theme-provided foreground, which every theme calibrates to be
+clearly visible against its own modeline background and therefore also
+gives a clear hairline against the buffer background it now sits on.
+
 **Changes:**
 
-1. `ee-modeline.el:311-323` — in `+subtle-mode-line`, remove the
-   `:overline` argument from both the `mode-line-active` and
-   `mode-line-inactive` `set-face-attribute` calls. Keep the 4px `:box`
-   (it provides padding without a visible line). The function continues
-   to be installed via `ee-modeline-mode` at `:368-370`.
+1. `ee-modeline.el:311-326` — in `+subtle-mode-line`, change the
+   `:overline` colour source from `default :foreground` to
+   `mode-line :foreground` on both `mode-line-active` and
+   `mode-line-inactive`. Keep the 4px `:box` (padding) and the merged
+   `:background`. The function continues to be installed via
+   `ee-modeline-mode`.
 2. `ee-fonts.el:75-88` — delete the duplicate `ee-subtle-mode-line`
    function entirely. Reason: it is functionally a copy of
    `+subtle-mode-line` but is unconditionally hooked, while
-   `+subtle-mode-line` is gated by the `ee-modeline-mode` minor mode and
-   removes its hooks cleanly when the mode is toggled off (see the
-   `remove-hook` block at `ee-modeline.el:372-373`). `ee-modeline-mode`
-   itself is activated unconditionally at `ee-ui.el:86`, so deleting the
-   `ee-fonts.el` copy is safe — the mode-line styling will still be
-   applied by the surviving definition. Keeping both means the
+   `+subtle-mode-line` is gated by the `ee-modeline-mode` minor mode
+   (`ee-ui.el:86` activates the mode unconditionally) and removes its
+   hooks cleanly when the mode is toggled off. Keeping both means the
    mode-line face is set twice on every theme change.
 3. `ee-fonts.el:116-117` — delete the two hook registrations for
-   `ee-subtle-mode-line` (the `emacs-startup-hook` and
-   `enable-theme-functions` adds).
+   `ee-subtle-mode-line`.
 
-**Commit title:** `modeline: drop overline from subtle mode-line, remove duplicate`
+**Commit titles:**
+- `modeline: drop overline from subtle mode-line, remove duplicate` (initial — overline removal)
+- Follow-up: restore overline using `mode-line` face for theme-aware separation
 
 **Verification:**
 
 1. `home-manager switch`, restart Emacs.
-2. Look at any code buffer's mode-line. There should be **no** hairline
-   of foreground colour running across the very top of the mode-line bar
-   (the overline). There should still be a few pixels of breathing room
-   between the buffer text and the mode-line content (from the `:box`).
+2. Look at any code buffer's mode-line. There should be a 1px hairline
+   above the mode-line bar in the mode-line text colour — visible but
+   not as heavy as a full-contrast buffer-foreground line. A few pixels
+   of breathing room (from the `:box`) should sit below it.
 3. Programmatic check — `M-:` evaluate
-   `(face-attribute 'mode-line-active :overline)`. Should return
-   `unspecified`. Same for `'mode-line-inactive`.
+   `(face-attribute 'mode-line-active :overline)`. Should return a
+   colour string (the active theme's `mode-line :foreground` value),
+   not `unspecified`.
 4. `M-x ee-modeline-mode` (toggle off), then again (toggle on). No
-   errors should appear in `*Messages*` about a missing
-   `ee-subtle-mode-line`.
-5. `M-x load-theme RET modus-operandi RET` — mode-line should still
-   look subtle (no overline added by the theme load). Re-check the
-   programmatic overline assertion from step 3.
+   errors in `*Messages*` about a missing `ee-subtle-mode-line`.
+5. `M-x load-theme RET modus-operandi RET` (a light theme) — the
+   hairline should still be visible-but-quiet against the light bg.
+   Switch through a couple more themes to confirm the separator stays
+   well-calibrated.
 
-**Regression risk:** low. If the user actually liked the overline as a
-visual divider, they will notice. Mitigation: the `:box` still provides
-separation; if they want the overline back, the revert is one line.
+**Regression risk:** very low. The visible separator is back, but now
+theme-aware and lower-contrast than the original.
 
-**Rollback:** `git revert <commit>` restores both definitions and the
-overline.
+**Rollback:** `git revert <commit>` for the follow-up reverts to no
+overline; revert both to restore the original heavy overline + both
+function definitions.
 
 ---
 
@@ -408,7 +420,7 @@ These came up in the three-agent review but are explicitly deferred:
 | Phase | Title                                                            | Status                  |
 |-------|------------------------------------------------------------------|-------------------------|
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
-| 2     | Drop overline from subtle mode-line, remove duplicate            | [x] implemented (awaiting verification) |
+| 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
 | 3     | Theme-portable org tag and TODO faces                            | [ ]                     |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
