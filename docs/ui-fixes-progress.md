@@ -35,40 +35,44 @@ through mixed-pitch and switch prose to float scale`).
 
 ## Phase 1 — Re-apply fonts on theme change
 
-**Status:** [x] implemented (awaiting verification)
+**Status:** [x] verified (commit `35efe1e`)
 
-**Files:** `config.el`
+**Files:** `config-sample.el` (the tracked template; the same edits were
+mirrored into the local untracked `config.el` so `home-manager switch`
+exercises the new code path immediately). Line numbers below refer to
+`config-sample.el`; the equivalent lines in the user's local `config.el`
+are 71 / 105 / 108 / 98.
 
 **Changes:**
 
-1. `config.el:71` — change `(defun ehsan/apply-font-after-theme ()` to
+1. `config-sample.el:64` — change `(defun ehsan/apply-font-after-theme ()` to
    `(defun ehsan/apply-font-after-theme (&rest _args)`. `enable-theme-functions`
    passes the theme symbol; the function must accept it.
-2. `config.el:105` — replace
+2. `config-sample.el:98` — replace
    `(add-hook 'after-load-theme-hook #'ehsan/apply-font-after-theme)` with
    `(add-hook 'enable-theme-functions #'ehsan/apply-font-after-theme)`.
    `after-load-theme-hook` is not a real Emacs hook — nothing in standard
    Emacs or current `doom-themes` runs it. `enable-theme-functions` is the
    Emacs 29+ standard hook for "a theme was just enabled."
-3. `config.el:108` — delete the redundant
+3. `config-sample.el:101` — delete the redundant
    `(add-hook 'after-init-hook #'ehsan/apply-font-after-theme)`. The direct
-   call at `:98` already applies fonts at startup; the new
+   call at `:89` already applies fonts at startup; the new
    `enable-theme-functions` hook handles re-application after any
    subsequent theme load (including the initial `load-theme` at
-   `config.el:30`).
+   `config-sample.el:30`).
 4. Update the docstring of `ehsan/apply-font-after-theme` to mention that
    `&rest _args` exists to absorb the theme argument from
    `enable-theme-functions`.
 
 **Commit title:** `fonts: re-apply on theme change via enable-theme-functions`
 
-**Note on ordering:** the initial `load-theme` at `config.el:30` fires
-*before* the `add-hook` at `:105`, so the hook does **not** run on the
-startup theme load. That's fine — the direct call to
-`ehsan/apply-font-after-theme` at `config.el:98` already applies fonts
-at startup. The hook's job is to catch every *subsequent* `load-theme`.
-Verification must therefore explicitly exercise a post-init theme
-switch, not just inspect post-startup state.
+**Note on ordering:** the initial `load-theme` at `config-sample.el:30`
+fires *before* the `add-hook` at `:98`, so the hook does **not** run on
+the startup theme load. That's fine — the direct call to
+`ehsan/apply-font-after-theme` at `config-sample.el:89` already applies
+fonts at startup. The hook's job is to catch every *subsequent*
+`load-theme`. Verification must therefore explicitly exercise a
+post-init theme switch, not just inspect post-startup state.
 
 **Verification:**
 
@@ -401,13 +405,13 @@ These came up in the three-agent review but are explicitly deferred:
 
 ## Status summary
 
-| Phase | Title                                                            | Status |
-|-------|------------------------------------------------------------------|--------|
-| 1     | Re-apply fonts on theme change                                   | [x]    |
-| 2     | Drop overline from subtle mode-line, remove duplicate            | [ ]    |
-| 3     | Theme-portable org tag and TODO faces                            | [ ]    |
-| 4     | Wire up emoji and Arabic font fallbacks                          | [ ]    |
-| 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]    |
+| Phase | Title                                                            | Status                  |
+|-------|------------------------------------------------------------------|-------------------------|
+| 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
+| 2     | Drop overline from subtle mode-line, remove duplicate            | [ ]                     |
+| 3     | Theme-portable org tag and TODO faces                            | [ ]                     |
+| 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
+| 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
 
 Update the `Status:` field at the top of each phase section and tick
 the table row after the corresponding commit lands.
