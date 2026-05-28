@@ -13,6 +13,12 @@
 ;; Load paths
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 
+;; Redirect Customize-saved settings to a dedicated file so the Custom
+;; system stops writing `custom-set-variables' / `custom-set-faces'
+;; blocks into this file on every theme-safe approval or face tweak.
+;; `custom.el' lives next to `init.el' and is gitignored.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 ;; Core modules
 (require 'ee-core)
 (require 'ee-completion)
@@ -66,6 +72,10 @@
 
 ;; User configuration
 (load (expand-file-name "config.el" user-emacs-directory) nil 'nomessage)
+
+;; Customize-saved settings (theme-safe approvals, etc.). Loaded after
+;; modules and user config so customizations overlay package defaults.
+(load custom-file 'noerror 'nomessage)
 
 ;; Post-init cleanup
 (add-hook 'emacs-startup-hook
