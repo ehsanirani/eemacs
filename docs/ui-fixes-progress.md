@@ -310,7 +310,7 @@ Iterated to a design that keeps pills but makes them theme-aware:
 
 ## Phase 4 — Wire up emoji and Arabic font fallbacks
 
-**Status:** [ ] not started
+**Status:** [x] implemented (awaiting verification)
 
 **Files:** `ee-fonts.el`
 
@@ -466,7 +466,7 @@ These came up in the three-agent review but are explicitly deferred:
 | 1     | Re-apply fonts on theme change                                   | [x] verified (`35efe1e`) |
 | 2     | Subtle mode-line: theme-aware overline, remove duplicate         | [x] verified (`0e742ce` + follow-up) |
 | 3     | Theme-portable org tag and TODO faces                            | [x] verified (`adef603` + follow-up) |
-| 4     | Wire up emoji and Arabic font fallbacks                          | [ ]                     |
+| 4     | Wire up emoji and Arabic font fallbacks                          | [x] implemented (awaiting verification) |
 | 5     | Delete dead disabled code in `ee-ui.el`                          | [ ]                     |
 
 Update the `Status:` field at the top of each phase section and tick

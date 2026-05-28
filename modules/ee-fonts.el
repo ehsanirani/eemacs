@@ -96,6 +96,10 @@ FiraCode does NOT have italics - use JetBrains Mono, Cascadia Code, or Victor Mo
 
 (add-hook 'enable-theme-functions #'ee-tweak-faces)
 (add-hook 'emacs-startup-hook #'ee-tweak-faces)
+(add-hook 'emacs-startup-hook #'ee-setup-emoji-font)
+(add-hook 'emacs-startup-hook #'ee-setup-arabic-font)
+(add-hook 'server-after-make-frame-hook #'ee-setup-emoji-font)
+(add-hook 'server-after-make-frame-hook #'ee-setup-arabic-font)
 
 ;;; Keybindings
 
