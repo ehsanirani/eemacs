@@ -13,8 +13,6 @@
 
 ;;; Code:
 
-(require 'cl-lib)  ; for `cl-return' used by the multi-language font setup
-
 (defgroup ee-fonts nil
   "Font configuration for eemacs."
   :group 'faces)
@@ -75,24 +73,47 @@ FiraCode does NOT have italics - use JetBrains Mono, Cascadia Code, or Victor Mo
 ;;; Multi-language font support
 
 (defun ee-setup-emoji-font ()
-  "Setup emoji font fallback."
+  "Setup emoji font fallback.
+Iterates candidates in order; first installed family wins. We use
+`find-font' (which asks the font backend to resolve a spec) rather
+than `(member \"...\" (font-family-list))' because color emoji fonts
+on Linux/fontconfig are often resolvable yet absent from
+`font-family-list' at startup-hook time. To override, install a
+higher-priority candidate or `setq' a custom call earlier."
   (interactive)
   (when (display-graphic-p)
-    (dolist (font '("Noto Color Emoji" "Apple Color Emoji" "Segoe UI Emoji"))
-      (when (member font (font-family-list))
-        (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend)
-        (message "Emoji font set to %s" font)
-        (cl-return)))))
+    (catch 'done
+      (dolist (font '("Noto Color Emoji"
+                      "Twitter Color Emoji"
+                      "Twemoji"
+                      "JoyPixels"
+                      "Emoji One"
+                      "Apple Color Emoji"
+                      "Segoe UI Emoji"
+                      "Symbola"))
+        (when (find-font (font-spec :family font))
+          (set-fontset-font t 'emoji (font-spec :family font) nil 'prepend)
+          (message "Emoji font set to %s" font)
+          (throw 'done nil))))))
 
 (defun ee-setup-arabic-font ()
-  "Setup Arabic script font."
+  "Setup Arabic/Persian script font.
+Iterates candidates in order; first installed family wins. Vazirmatn
+leads because the primary user reads Persian — swap order or extend
+this list to taste."
   (interactive)
   (when (display-graphic-p)
-    (dolist (font '("Amiri" "Cascadia Code" "DejaVu Sans"))
-      (when (member font (font-family-list))
-        (set-fontset-font t 'arabic (font-spec :family font) nil)
-        (message "Arabic font set to %s" font)
-        (cl-return)))))
+    (catch 'done
+      (dolist (font '("Vazirmatn"
+                      "Amiri"
+                      "Noto Sans Arabic"
+                      "Noto Naskh Arabic"
+                      "Cascadia Code"
+                      "DejaVu Sans"))
+        (when (find-font (font-spec :family font))
+          (set-fontset-font t 'arabic (font-spec :family font) nil)
+          (message "Arabic font set to %s" font)
+          (throw 'done nil))))))
 
 ;;; Apply on startup and theme change
 
