@@ -267,8 +267,7 @@ files from registered project notes/ directories."
 
           ("j" "Journal" entry
            (file+olp+datetree ,(expand-file-name "journal.org" org-directory))
-           "* %^{Title}\n%U\n\n%?"
-           :clock-in t :clock-resume t)
+           "* %^{Title}\n%U\n\n%?")
 
           ("p" "Project Todo" entry
            (file ee-org--current-project-todo)
