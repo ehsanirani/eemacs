@@ -35,7 +35,7 @@ through mixed-pitch and switch prose to float scale`).
 
 ## Phase 1 — Re-apply fonts on theme change
 
-**Status:** [ ] not started
+**Status:** [x] implemented (awaiting verification)
 
 **Files:** `config.el`
 
@@ -403,7 +403,7 @@ These came up in the three-agent review but are explicitly deferred:
 
 | Phase | Title                                                            | Status |
 |-------|------------------------------------------------------------------|--------|
-| 1     | Re-apply fonts on theme change                                   | [ ]    |
+| 1     | Re-apply fonts on theme change                                   | [x]    |
 | 2     | Drop overline from subtle mode-line, remove duplicate            | [ ]    |
 | 3     | Theme-portable org tag and TODO faces                            | [ ]    |
 | 4     | Wire up emoji and Arabic font fallbacks                          | [ ]    |
