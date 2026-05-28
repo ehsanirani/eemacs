@@ -13,6 +13,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)  ; for `cl-return' used by the multi-language font setup
+
 (defgroup ee-fonts nil
   "Font configuration for eemacs."
   :group 'faces)
