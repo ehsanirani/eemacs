@@ -185,7 +185,8 @@ files from registered project notes/ directories."
   :commands (org-mode org-capture org-agenda)
   :bind (("C-c a" . org-agenda)
          ("C-c x" . org-capture))
-  :hook (((org-babel-after-execute org-mode) . org-redisplay-inline-images))
+  :hook (((org-babel-after-execute org-mode) . org-redisplay-inline-images)
+         (org-mode . (lambda () (display-line-numbers-mode -1))))
   :custom
   ;; Directories
   (org-directory (or (bound-and-true-p org-directory) "~/org"))

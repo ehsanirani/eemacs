@@ -91,6 +91,8 @@
   :hook (markdown-mode . (lambda ()
                            ;; Enable visual-line-mode for better text wrapping
                            (visual-line-mode 1)
+                           ;; No line numbers in prose
+                           (display-line-numbers-mode -1)
                            ;; Auto-fill mode for comfortable writing (disabled by default to avoid unwanted changes)
                            ;; (auto-fill-mode 1)  ; Uncomment if you want auto-fill
                            ;; Highlight current line for better focus
