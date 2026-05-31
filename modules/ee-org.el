@@ -426,7 +426,7 @@ files from registered project notes/ directories."
   ;; the surrounding text. 0.9 keeps labels distinct as badges without
   ;; the original aggressive 20% shrink. The package docstring on
   ;; `org-modern-label' explicitly invites this override.
-  (org-modern-label ((t (:height 0.9 :weight regular :underline nil))))
+  (org-modern-label ((t (:height 0.8 :weight regular :underline nil))))
   :custom
   (org-modern-table-vertical 5)
   (org-modern-table-horizontal 2)
@@ -570,12 +570,12 @@ When disabled, restores the original flat org-modern appearance."
   (org-pomodoro-mode-line-overtime ((t (:inherit error))))
   (org-pomodoro-mode-line-break ((t (:inherit success))))
   :bind (:map org-mode-map
-         ("C-c C-x m" . org-pomodoro))
+              ("C-c C-x m" . org-pomodoro))
   :init
   (with-eval-after-load 'org-agenda
     (bind-keys :map org-agenda-mode-map
-      ("K" . org-pomodoro)
-      ("C-c C-x m" . org-pomodoro))))
+               ("K" . org-pomodoro)
+               ("C-c C-x m" . org-pomodoro))))
 
 ;;;; ============================================================
 ;;;; Image & media
