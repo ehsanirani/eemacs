@@ -1,5 +1,11 @@
 ;;; ee-ui.el --- UI configuration for eemacs -*- lexical-binding: t; -*-
 
+;;; Commentary:
+;; UI packages and visual polish: themes (modus, ef), ligatures, indent
+;; guides, diff-hl, rainbow-delimiters, pulsar, and dired tweaks.
+
+;;; Code:
+
 ;; Load color library early to avoid native-comp warnings in theme packages
 (require 'color)
 
@@ -148,9 +154,7 @@
   (pulsar-global-mode 1)
   (setq pulsar-pulse-functions '(projectile-find-file embark-act ace-jump-char-mode avy-action-goto))
   (add-hook 'evil-yank-hook #'pulsar-pulse-line)
-  (add-hook 'isearch-mode-hook #'pulsar-highlight-line)
-  (add-hook 'isearch-mode-end-hook
-            (lambda () (pulsar-highlight-lines isearch-matches))))
+  (add-hook 'isearch-mode-end-hook #'pulsar-pulse-line))
 
 ;; Dired
 (use-package dired
