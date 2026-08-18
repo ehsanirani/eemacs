@@ -1,17 +1,70 @@
 ;;; ee-spelling.el --- Spell-checking for eemacs -*- lexical-binding: t; -*-
 
-;; On NixOS, jinx is provided via programs.emacs.extraPackages (epkgs.jinx).
-;; On other systems, straight.el fetches and compiles it (requires enchant2
-;; dev headers and a C compiler to be present at install time).
-(defvar ee-nixos-p (file-exists-p "/etc/NIXOS")
-  "Non-nil when running on NixOS.")
+;; jinx needs a native module.  On NixOS it is prebuilt and shipped via
+;; programs.emacs.extraPackages (epkgs.jinx); elsewhere straight.el fetches
+;; jinx and jinx.el compiles jinx-mod.c on first use, which needs enchant-2
+;; dev headers and a C compiler.
+;;
+;; This deliberately does NOT test for /etc/NIXOS.  That marker is invisible
+;; inside sandboxed Emacsen (neomacs runs in a bubblewrap FHS environment
+;; that binds only a fixed list of /etc entries), so the test reports "not
+;; NixOS" on a NixOS machine, straight builds a jinx without the module, and
+;; every single `find-file' then reports
+;;
+;;   File mode specification error: (error "Jinx: Compilation of jinx-mod.so failed")
+;;
+;; because `global-jinx-mode' runs from the major-mode hook, inside
+;; `set-auto-mode''s `with-demoted-errors'.  Ask where the module actually
+;; is instead.
 
-(unless ee-nixos-p
+(require 'cl-lib)
+
+(defun ee-jinx-locate-module ()
+  "Return a prebuilt `jinx-mod' module file, putting its directory first on
+`load-path'.
+
+Under the Nix Emacs wrapper the module ships next to jinx.el and is already
+reachable.  Other Emacsen -- neomacs, in particular -- do not inherit that
+wrapper's EMACSLOADPATH, so ask the `emacs' binary where the module lives
+rather than hardcoding a store path that changes on every nixpkgs update.
+The directory is prepended so it wins over a straight.el build that carries
+jinx.el but no compiled module."
+  (let ((mod (concat "jinx-mod" (or module-file-suffix ".so"))))
+    (or (locate-library mod t)
+        (let ((lib (ignore-errors
+                     (car (process-lines
+                           "emacs" "-Q" "--batch" "--eval"
+                           (format "(princ (or (locate-library \"%s\" t) \"\"))" mod))))))
+          (when (and (stringp lib)
+                     (not (string-empty-p lib))
+                     (file-exists-p lib))
+            (cl-pushnew (file-name-directory lib) load-path :test #'string=)
+            lib)))))
+
+(defvar ee-jinx-module (ee-jinx-locate-module)
+  "Path to a prebuilt `jinx-mod' module, or nil if none was found.")
+
+;; No prebuilt module anywhere: let straight fetch jinx and let jinx.el build
+;; the module itself on first use.
+(unless ee-jinx-module
   (straight-use-package 'jinx))
+
+(defun ee-jinx-enable ()
+  "Turn on `global-jinx-mode', tolerating an unusable native module.
+Loading the module here surfaces a failure once, at startup, instead of
+once per visited file through `set-auto-mode'."
+  (condition-case err
+      (progn
+        (require 'jinx)
+        (jinx--load-module)
+        (global-jinx-mode 1))
+    (error
+     (message "ee-spelling: jinx unavailable (%s); spell checking is off"
+              (error-message-string err)))))
 
 (use-package jinx
   :straight nil
-  :hook (emacs-startup . global-jinx-mode)
+  :hook (emacs-startup . ee-jinx-enable)
   :custom
   (jinx-languages "en_US de_DE")
   :bind

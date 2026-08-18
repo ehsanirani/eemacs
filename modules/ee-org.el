@@ -449,9 +449,14 @@ files from registered project notes/ directories."
   (global-org-modern-mode 1))
 
 ;; Variable-pitch body text with monospace preserved for structured elements
+;; The org-mode hook is conditional: `org-src-fontify-natively' (set above)
+;; and mixed-pitch multiply on neomacs's font matcher, the same interaction
+;; documented in ee-markdown.el.  See `ee-neomacs-p' in ee-core.el.
 (use-package mixed-pitch
   :straight t
-  :hook (org-mode . mixed-pitch-mode)
+  :hook ((org-mode . (lambda ()
+                       (unless (bound-and-true-p ee-neomacs-p)
+                         (mixed-pitch-mode 1)))))
   :config
   ;; Propagate `:height' from `variable-pitch' into the buffer remap.
   ;; Without this, mixed-pitch only applies `:family' and `:weight', so

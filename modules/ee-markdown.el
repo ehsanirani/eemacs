@@ -77,8 +77,17 @@
   ;; Apply language highlighting
   (add-hook 'markdown-mode-hook 'ee-markdown-highlight-languages)
 
-  ;; Proportional prose / monospace code (matches ee-org behaviour)
-  (add-hook 'markdown-mode-hook #'mixed-pitch-mode)
+  ;; Proportional prose / monospace code (matches ee-org behaviour).
+  ;;
+  ;; Skipped under neomacs: mixed-pitch remaps faces buffer-wide, and each
+  ;; remapped face sends another query through neomacs's font matcher.  On its
+  ;; own that is fine, and `markdown-fontify-code-blocks-natively' on its own
+  ;; is fine, but together they multiply -- opening this repo's README.md took
+  ;; 194s with both enabled versus 1.9s with either one off.  Code-block
+  ;; syntax colours are worth more than proportional body text here, so
+  ;; mixed-pitch is the one that goes.
+  (unless (bound-and-true-p ee-neomacs-p)
+    (add-hook 'markdown-mode-hook #'mixed-pitch-mode))
 
   ;; Ensure proper fontification
   (add-hook 'markdown-mode-hook

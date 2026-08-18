@@ -1,5 +1,13 @@
 ;;; ee-core.el --- Core configuration for eemacs -*- lexical-binding: t; -*-
 
+;; Which Emacs are we?  neomacs is a Rust fork of Emacs 31 with a GPU display
+;; engine; it identifies itself as Emacs 31.0.50, so version tests cannot tell
+;; it apart.  `neomacs-effect-set' is part of its animation API and exists
+;; nowhere else, which makes it a reliable marker.  Used to skip the handful
+;; of settings whose cost is pathological on its young font/layout stack.
+(defvar ee-neomacs-p (fboundp 'neomacs-effect-set)
+  "Non-nil when running under neomacs rather than GNU Emacs.")
+
 ;; Bootstrap straight.el
 (setq package-enable-at-startup nil)
 
